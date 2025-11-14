@@ -1,0 +1,16 @@
+make GraphicsObject class for easy shapes
+    - make Circle and Square and Rectangle base classes
+make Basic SoundSystem with FMOD
+    -add SoundEffectSystem too later
+make very basic ParticleSystem using GraphicsObject
+    -see if need to make LifetimeGraphicsObject
+make ui system
+make more utils
+
+make basic AnimationSystem (maybe)
+    -like spritesheet
+make easy default shaders
+    -Bloom, etc.
+make more stuff
+
+make the game
