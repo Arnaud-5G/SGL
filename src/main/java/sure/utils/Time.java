@@ -1,15 +1,27 @@
 package sure.utils;
 
 public class Time {
-    public static long timeStarted = System.nanoTime();
-    public static long currentTime = timeStarted;
-    public static long lastTime = currentTime;
+    private static long timeStarted = System.nanoTime();
+    private static long currentTime = timeStarted;
+    private static long lastTime = currentTime;
+
+    private static long scaledTimePassed = 0;
+
+    public static float scale = 1f;
 
     private Time(){}
 
     public static void timePassedCall() {
         lastTime = currentTime;
         currentTime = System.nanoTime();
+        scaledTimePassed += (long) ((currentTime - lastTime) * scale);
+    }
+
+    /**
+     * Will make time go faster or shorter depending on the {@code scale}
+     */
+    public static void scale(float scale) {
+        Time.scale = scale;
     }
 
     /**
@@ -17,22 +29,40 @@ public class Time {
      */
     public static void resetStartTime() {
         timeStarted = currentTime;
+        scaledTimePassed = 0;
     }
 
     /**
-     * @return time since start in seconds
+     * @return time since start in seconds (not scaled)
      */
     public static float getTime() {
-        return (currentTime - timeStarted) * 1E-9f;
+        return (timeStarted - currentTime) * 1E-9f;
     }
 
     /**
-     * @return deltaTime in seconds
+     * @return time since start in seconds (scaled)
+     */
+    public static float getScaledTime() {
+        return scaledTimePassed * 1E-9f;
+    }
+
+    /**
+     * @return deltaTime in seconds (not scaled)
      */
     public static float deltaTime() {
         return (currentTime - lastTime) * 1E-9f;
     }
 
+    /**
+     * @return deltaTime in seconds (scaled)
+     */
+    public static float scaledDeltaTime() {
+        return (currentTime - lastTime) * scale * 1E-9f;
+    }
+
+    /**
+     * @return the fps the game is running in (not scaled)
+     */
     public static float FPS() {
         return 1/deltaTime();
     }

@@ -6,6 +6,8 @@ import sure.listeners.KeyListener;
 import sure.listeners.MouseListener;
 import sure.utils.Time;
 
+import java.awt.*;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -35,18 +37,27 @@ public class Window {
         return window;
     }
 
-    public void run(Game game) {
-        System.out.println("Hello LWJGL " + Runtime.version() + "!");
+    /**
+     * @return the window's intended width in pixels
+     */
+    public int getWidth() {
+        return width;
+    }
 
+    /**
+     * @return the window's intended height in pixels
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    public void run(Game game) {
         this.game = game;
 
         init();
         loop();
 
-        glfwFreeCallbacks(glfwWindow);
-        glfwDestroyWindow(glfwWindow);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        close();
     }
 
     public void init() {
@@ -80,19 +91,26 @@ public class Window {
 
         game.init();
     }
+
     public void loop() {
         while(!glfwWindowShouldClose(glfwWindow)) {
             Time.timePassedCall();
 
             glfwPollEvents();
 
-            glClearColor(1f, 1f, 1f, 1f); // set color buffer to red
+            glClearColor(1f, 1f, 1f, 1f); // set color buffer to white
             glClear(GL_COLOR_BUFFER_BIT); // set screen to color buffer
 
             game.update();
 
             glfwSwapBuffers(glfwWindow);
-            System.out.println(Time.FPS());
         }
+    }
+
+    public void close() {
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 }

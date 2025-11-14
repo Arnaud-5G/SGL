@@ -7,9 +7,15 @@ import org.joml.Vector3f;
 public class Camera {
     private Matrix4f projectionMatrix, viewMatrix;
     public Vector2f position;
+    public float rotation;
 
-    public Camera(Vector2f position) { // TODO: add rotation later
+    public Camera(Vector2f position) {
+        this(position, 0f);
+    }
+
+    public Camera(Vector2f position, float rotation) {
         this.position = position;
+        this.rotation = rotation;
 
         this.projectionMatrix = new Matrix4f();
         this.viewMatrix = new Matrix4f();
@@ -29,6 +35,7 @@ public class Camera {
         viewMatrix.lookAt(new Vector3f(position.x, position.y, 20f),
                             cameraFront.add(position.x, position.y, 0f),
                             cameraUp);
+        viewMatrix.rotateZ((float) Math.toRadians(rotation));
         return this.viewMatrix;
     }
 
