@@ -11,6 +11,7 @@ make basic AnimationSystem (maybe)
     -like spritesheet
 make easy default shaders
     -Bloom, etc.
+maybe make a JoystickListener
 make more stuff
 
 make the game

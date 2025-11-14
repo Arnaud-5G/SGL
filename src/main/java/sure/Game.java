@@ -1,8 +1,7 @@
-package sure.scenes;
+package sure;
 
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
-import sure.Camera;
 import sure.renderers.Shader;
 import sure.renderers.Texture;
 import sure.utils.Time;
@@ -13,13 +12,13 @@ import java.nio.IntBuffer;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class LevelEditorScene extends Scene {
+public abstract class Game {
     private float[] vertexArray = {
-        // position      // color            // uv coords
-        50f, 0f, 0f,     1f, 0f, 0f, 1f,     1f, 0f,// bottom right 0
-        0f, 50f, 0f,     0f, 1f, 0f, 1f,     0f, 1f,// top left     1
-        50f, 50f, 0f,    0f, 0f, 1f, 1f,     1f, 1f,// top right    2
-        0f, 0f, 0f,      0f, 1f, 1f, 1f,     0f, 0f,// bottom left  3
+            // position + z        // color            // uv coords
+            100f, 0f, 0f, 1f,      1f, 0f, 0f, 1f,     1f, 0f,// bottom right 0
+            0f, 100f, 0f, 1f,      0f, 1f, 0f, 1f,     0f, 1f,// top left     1
+            100f, 100f, 0f, 1f,    0f, 0f, 1f, 1f,     1f, 1f,// top right    2
+            0f, 0f, 0f, 1f,        0f, 1f, 1f, 1f,     0f, 0f,// bottom left  3
     };
 
     // must be counter-clockwise order
@@ -30,20 +29,11 @@ public class LevelEditorScene extends Scene {
 
     private int vaoID, vboID, eboID;
 
-    private Shader shader;
-    private Texture texture;
+    protected Camera camera;
+    protected Shader shader;
+    protected Texture texture; // TODO: change to array
 
-    public LevelEditorScene(){
-
-    }
-
-    @Override
-    public void init() {
-        camera = new Camera(new Vector2f());
-        shader = new Shader("src/main/java/sure/shaders/default.glsl");
-        shader.compile();
-        texture = new Texture("assets/Test Image1.png");
-
+    void init() {
         // generate vao, vbo and ebo
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);
@@ -62,7 +52,7 @@ public class LevelEditorScene extends Scene {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
 
-        int positionSize = 3;
+        int positionSize = 4;
         int colorSize = 4;
         int uvSize = 2;
         int vertexSizeBytes = (positionSize + colorSize + uvSize)*Float.BYTES;
@@ -72,32 +62,47 @@ public class LevelEditorScene extends Scene {
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionSize + colorSize) * Float.BYTES);
         glEnableVertexAttribArray(2);
+
+        this.start();
+
+        if (camera == null) {
+            camera = new Camera(new Vector2f());
+        }
+
+        if (shader == null) {
+            shader = new Shader("src/main/java/sure/shaders/default.glsl");
+        }
+        shader.compile();
     }
 
-    @Override
-    public void update() {
-        camera.position.x -= Time.deltaTime() * 50f;
+    public abstract void start();
 
+    void update() {
         // bind
         shader.use();
         shader.uploadMath4f("uProjection", camera.getProjectionMatrix());
         shader.uploadMath4f("uView", camera.getViewMatrix());
         shader.uploadFloat("uTime", Time.getTime());
-        shader.uploadTexture("uTextureSampler", 0);
-        glActiveTexture(GL_TEXTURE0);
-        texture.bind();
+        shader.uploadTexture("uTextureSampler", 0); // TODO:
+        glActiveTexture(GL_TEXTURE0);                            // change to
+        texture.bind();                                          // array later
 
         glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         // draw
         glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
+        this.execute();
 
         // Unbind
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         shader.detach();
     }
+
+    public abstract void execute();
 }

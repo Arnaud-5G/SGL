@@ -4,7 +4,6 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import sure.listeners.KeyListener;
 import sure.listeners.MouseListener;
-import sure.scenes.*;
 import sure.utils.Time;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -20,19 +19,12 @@ public class Window {
 
     private long glfwWindow;
 
-    private static int currentSceneIndex = -1;
-    private static Scene currentScene;
-
-
-    // fun vars
-    public float r = 1;
-    public float g = 1;
-    public float b = 1;
+    private Game game;
 
     private Window() {
         width = 1920;
         height = 1080;
-        title = "PhysicsSim";
+        title = "SGL Test";
     }
 
     public static Window get() {
@@ -43,25 +35,10 @@ public class Window {
         return window;
     }
 
-    public static void changeScene(int newScene) {
-        switch (newScene) {
-            case 0:
-                currentSceneIndex = 0;
-                currentScene = new LevelEditorScene();
-                currentScene.init();
-                break;
-            case 1:
-                currentSceneIndex = 1;
-                currentScene = new LevelScene();
-                currentScene.init();
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + newScene);
-        }
-    }
-
-    public void run() {
+    public void run(Game game) {
         System.out.println("Hello LWJGL " + Runtime.version() + "!");
+
+        this.game = game;
 
         init();
         loop();
@@ -101,7 +78,7 @@ public class Window {
 
         GL.createCapabilities(); // enable opengl
 
-        changeScene(0);
+        game.init();
     }
     public void loop() {
         while(!glfwWindowShouldClose(glfwWindow)) {
@@ -109,10 +86,10 @@ public class Window {
 
             glfwPollEvents();
 
-            glClearColor(r, g, b, 1f); // set color buffer to red
+            glClearColor(1f, 1f, 1f, 1f); // set color buffer to red
             glClear(GL_COLOR_BUFFER_BIT); // set screen to color buffer
 
-            currentScene.update();
+            game.update();
 
             glfwSwapBuffers(glfwWindow);
             System.out.println(Time.FPS());

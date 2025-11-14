@@ -1,1 +1,1 @@
-rootProject.name = "PhysicsSim"
+rootProject.name = "SGL"
