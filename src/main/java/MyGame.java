@@ -17,7 +17,6 @@ public class MyGame extends Game {
     @Override
     public void execute() {
         shader.uploadFloat("uTime", Time.getScaledTime());
-        camera.rotation += 1;
         if(KeyListener.isKeyPressed(GLFW_KEY_RIGHT)) {
             camera.position.x -= Time.deltaTime() * 50f;
         } else if(KeyListener.isKeyPressed(GLFW_KEY_LEFT)) {
