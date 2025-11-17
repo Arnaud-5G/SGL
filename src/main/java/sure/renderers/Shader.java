@@ -63,7 +63,7 @@ public class Shader {
         int success = glGetShaderi(vertexID, GL_COMPILE_STATUS);
         if (success == GL_FALSE){
             int info = glGetShaderi(vertexID, GL_INFO_LOG_LENGTH);
-            System.out.println("ERROR: '" + filepath + "'\n\tVertext Shader compilation failed.");
+            System.out.println("ERROR: '" + filepath + "'\n\tVertex Shader compilation failed.");
             System.out.println(glGetShaderInfoLog(vertexID, info));
             System.exit(1);
         }

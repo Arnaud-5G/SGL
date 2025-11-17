@@ -17,7 +17,7 @@ void main() {
     fColor = aColor;
     fUV = aUV;
     fTextureSlot = aTextureSlot;
-    gl_Position = uProjection * uView * vec4(aPos, 1f);
+    gl_Position = uProjection * uView * vec4(aPos, 1);
 }
 
 #type fragment

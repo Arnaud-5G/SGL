@@ -98,10 +98,13 @@ public class Window {
 
             glfwPollEvents();
 
+            glEnable(GL_DEPTH_TEST);
             glClearColor(1f, 1f, 1f, 1f); // set color buffer to white
             glClear(GL_COLOR_BUFFER_BIT); // set screen to color buffer
 
             game.update();
+
+            glClear(GL_DEPTH_BUFFER_BIT);
 
             glfwSwapBuffers(glfwWindow);
         }

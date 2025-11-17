@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import sure.renderers.Shader;
 import sure.renderers.Texture;
+import sure.renderers.VertexRenderer;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -33,40 +34,11 @@ public abstract class Game {
     protected Texture[] texture = new Texture[8];
 
     void init() {
-        // generate vao, vbo and ebo
-        vaoID = glGenVertexArrays();
-        glBindVertexArray(vaoID);
+        VertexRenderer.start();
 
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexArray.length);
-        vertexBuffer.put(vertexArray).flip();
+        this.load();
 
-        vboID = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-        IntBuffer elementBuffer = BufferUtils.createIntBuffer(elementArray.length);
-        elementBuffer.put(elementArray).flip();
-
-        eboID = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
-
-        int positionSize = 3;
-        int colorSize = 4;
-        int uvSize = 2;
-        int textureSlotSize = 1;
-        int vertexSizeBytes = (positionSize + colorSize + uvSize + textureSlotSize) * Float.BYTES;
-        glVertexAttribPointer(0, positionSize, GL_FLOAT, false, vertexSizeBytes, 0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionSize * Float.BYTES);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionSize + colorSize) * Float.BYTES);
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(3, textureSlotSize, GL_FLOAT, false, vertexSizeBytes, (positionSize + colorSize + uvSize) * Float.BYTES);
-        glEnableVertexAttribArray(3);
-
-        this.start();
-
+        // force load required objects
         if (camera == null) {
             camera = new Camera(new Vector2f());
         }
@@ -75,11 +47,16 @@ public abstract class Game {
             shader = new Shader("src/main/java/sure/shaders/default.glsl");
         }
         shader.compile();
+
+        this.start();
     }
+
+    public abstract void load();
 
     public abstract void start();
 
     void update() {
+        VertexRenderer.bind();
         // bind
         shader.use();
         shader.uploadMath4f("uProjection", camera.getProjectionMatrix());
@@ -94,22 +71,12 @@ public abstract class Game {
             texture[i].bind();
         }
 
-        glBindVertexArray(vaoID);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        glEnableVertexAttribArray(3);
-
         // draw
-        glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
+        VertexRenderer.render();
         this.execute();
 
         // Unbind
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glDisableVertexAttribArray(3);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        VertexRenderer.unbind();
         shader.detach();
         for (int i = 0; i < texture.length; i++) {
             if (texture[i] == null) {
