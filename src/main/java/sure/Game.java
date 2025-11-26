@@ -31,7 +31,7 @@ public abstract class Game {
 
     protected Camera camera;
     protected Shader shader;
-    protected Texture[] texture = new Texture[8];
+    protected Texture[] texture = new Texture[31]; // max number of textures supported by opengl
 
     void init() {
         VertexRenderer.start();

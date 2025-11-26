@@ -81,7 +81,7 @@ public class VertexRenderer {
         GraphicsObject[] objectArr = objects.toArray(new GraphicsObject[0]);
 
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(totalVertices * GraphicsObject.numberOfAttributes);
-         IntBuffer elementBuffer = BufferUtils.createIntBuffer(totalElements * 3);
+        IntBuffer elementBuffer = BufferUtils.createIntBuffer(totalElements * 3);
 
         int vertexOffset = 0;
         for (GraphicsObject graphicsObject : objectArr) {
@@ -104,9 +104,7 @@ public class VertexRenderer {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_DYNAMIC_DRAW);
 
-        // draw using the final number of indices (total triangles * 3)
-        int indexCount = totalElements * 3;
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, totalElements * 3, GL_UNSIGNED_INT, 0);
     }
 
     public static void bind() {

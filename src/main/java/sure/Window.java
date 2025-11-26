@@ -45,10 +45,30 @@ public class Window {
     }
 
     /**
+     * @return the window's actual width in pixels
+     */
+    public int getActualWidth() {
+        int[] width = new int[1];
+        int[] height = new int[1];
+        glfwGetFramebufferSize(glfwWindow, width, height);
+        return width[0];
+    }
+
+    /**
      * @return the window's intended height in pixels
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * @return the window's actual height in pixels
+     */
+    public int getActualHeight() {
+        int[] width = new int[1];
+        int[] height = new int[1];
+        glfwGetFramebufferSize(glfwWindow, width, height);
+        return height[0];
     }
 
     public void run(Game game) {

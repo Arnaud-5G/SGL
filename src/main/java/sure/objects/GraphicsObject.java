@@ -22,7 +22,7 @@ public class GraphicsObject {
         this(x, y, 0);
     }
 
-    public  GraphicsObject(float x, float y, float zIndex) {
+    public GraphicsObject(float x, float y, float zIndex) {
         this(x, y, zIndex, 100, 100, -1);
     }
 
@@ -101,7 +101,7 @@ public class GraphicsObject {
     }
 
     public int[] makePartialEBO() {
-        int[] miniEBO = new int[(numOfVertices - 1) * 2]; // TODO: support different shapes
+        int[] miniEBO; // TODO: support different shapes
 
         miniEBO = new int[]{
                 2, 1, 0, // top-right triangle

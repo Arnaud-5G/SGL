@@ -5,7 +5,7 @@ make Basic SoundSystem with FMOD
 make very basic ParticleSystem using GraphicsObject
     -see if need to make LifetimeGraphicsObject
 make ui system
-make more utils
+make more utils (Memory util)
 
 make basic AnimationSystem (maybe)
     -like spritesheet

@@ -1,5 +1,8 @@
 package sure.listeners;
 
+import sure.Camera;
+import sure.Window;
+
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 

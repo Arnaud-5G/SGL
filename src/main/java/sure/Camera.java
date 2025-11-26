@@ -3,6 +3,7 @@ package sure;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class Camera {
     private Matrix4f projectionMatrix, viewMatrix;
@@ -33,7 +34,7 @@ public class Camera {
         Vector3f cameraUp = new Vector3f(0f, 1f, 0f);
         viewMatrix.identity();
         viewMatrix.lookAt(new Vector3f(position.x, position.y, 20f),
-                            cameraFront.add(position.x, position.y, 0f),
+                            cameraFront.add(position.x, position.y, 0f, new Vector3f()),
                             cameraUp);
         viewMatrix.rotateZ((float) Math.toRadians(rotation));
         return this.viewMatrix;
@@ -41,5 +42,12 @@ public class Camera {
 
     public Matrix4f getProjectionMatrix() {
         return this.projectionMatrix;
+    }
+
+    public Vector3f screenToWorld(Vector2f screenPosition) {
+        screenPosition.y = (Window.get().getActualHeight()) - screenPosition.y;
+        Matrix4f invMatrix = new Matrix4f(getProjectionMatrix()).mul(viewMatrix);
+        Vector3f pos = invMatrix.unproject(new Vector3f(screenPosition, 0), new int[] { 0, 0, Window.get().getActualWidth(), Window.get().getActualHeight()}, new Vector3f());
+        return pos;
     }
 }
