@@ -1,5 +1,6 @@
 package sure.listeners;
 
+import org.joml.Vector2f;
 import sure.Camera;
 import sure.Window;
 
@@ -12,8 +13,24 @@ public class MouseListener {
     private double scrollX, scrollY;
     private double posX, lastX, posY, lastY;
 
-    private boolean[] mouseButtonPressed = new boolean[3];
+    private final boolean[] mouseButtonPressed = new boolean[3];
     private boolean isDragging;
+
+    public enum MouseButton {
+        LEFT(0),
+        MIDDLE(1),
+        RIGHT(2);
+
+        private final int index;
+
+        MouseButton(int index) {
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+    }
 
     private MouseListener() {
         scrollX = 0;
@@ -62,11 +79,8 @@ public class MouseListener {
         get().scrollY = yOffset;
     }
 
-    public static void endFrame() {
-        get().scrollX = 0;
-        get().scrollY = 0;
-        get().lastX = get().posX;
-        get().lastY = get().posY;
+    public static Vector2f getMousePos() {
+        return new Vector2f((float) get().posX, (float) get().posY);
     }
 
     public static float getX() {
@@ -97,8 +111,12 @@ public class MouseListener {
         return get().isDragging;
     }
 
+    public static boolean mouseButtonDown(MouseButton button) {
+        return mouseButtonDown(button.getIndex());
+    }
+
     public static boolean mouseButtonDown(int button) {
-        if(button < get().mouseButtonPressed.length)
+        if(button > get().mouseButtonPressed.length - 1)
             throw new ArrayIndexOutOfBoundsException("button: " + button + " is not supported by this library");
         return get().mouseButtonPressed[button];
     }

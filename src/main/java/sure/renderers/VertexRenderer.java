@@ -6,11 +6,9 @@ import sure.objects.GraphicsObject;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
@@ -18,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class VertexRenderer {
-    private static List<GraphicsObject> objects = new ArrayList<GraphicsObject>();
+    private static ArrayList<GraphicsObject> objects = new ArrayList<GraphicsObject>();
     private static int totalVertices = 0;
     private static int totalElements = 0;
 
@@ -121,5 +119,9 @@ public class VertexRenderer {
         glDisableVertexAttribArray(2);
         glDisableVertexAttribArray(3);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    public static ArrayList<GraphicsObject> getGraphicsObjects() {
+        return objects;
     }
 }

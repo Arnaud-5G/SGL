@@ -3,6 +3,7 @@ import org.joml.Vector3f;
 import sure.Game;
 import sure.listeners.KeyListener;
 import sure.listeners.MouseListener;
+import sure.objects.Button;
 import sure.objects.GraphicsObject;
 import sure.renderers.Shader;
 import sure.renderers.Texture;
@@ -12,7 +13,7 @@ import sure.utils.Time;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MyGame extends Game {
-    GraphicsObject object;
+    Button object;
     GraphicsObject object2;
     float i =0;
 
@@ -24,7 +25,7 @@ public class MyGame extends Game {
         texture[1] = Assets.getTexture("assets/Test Image2.png");
 
         object2 = new GraphicsObject(400, 400, 0, 200, 100, 0);
-        object = new GraphicsObject(50, 50, 1, 100, 100, 0);
+        object = new Button(100, 100);
     }
 
     @Override
@@ -45,11 +46,6 @@ public class MyGame extends Game {
 //        } else if(KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
 //            object.y -= Time.deltaTime() * 50f;
 //        }
-
-        Vector3f pos = camera.screenToWorld(new Vector2f(MouseListener.getX(),  MouseListener.getY()));
-
-        object.x = pos.x;
-        object.y = pos.y;
 
 //        if(KeyListener.isKeyPressed(GLFW_KEY_SPACE)) {
 //            object.width += Time.deltaTime() * 50f;

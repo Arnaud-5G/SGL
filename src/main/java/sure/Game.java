@@ -1,34 +1,20 @@
 package sure;
 
-import org.joml.Vector2f;
-import org.lwjgl.BufferUtils;
+import sure.components.Clickable;
+import sure.listeners.MouseListener;
+import static sure.listeners.MouseListener.*;
+import sure.objects.GraphicsObject;
 import sure.renderers.Shader;
 import sure.renderers.Texture;
 import sure.renderers.VertexRenderer;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import org.joml.Vector2f;
+
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 
 public abstract class Game {
-    private float[] vertexArray = {
-            // position + z        // color            // uv coords      // texture slot
-            100f, 0f, 0f,      1f, 0f, 0f, 1f,     1f, 0f,           0f, // bottom right 0
-            0f, 100f, 0f,      0f, 1f, 0f, 1f,     0f, 1f,           0f, // top left     1
-            100f, 100f, 0f,    0f, 0f, 1f, 1f,     1f, 1f,           0f, // top right    2
-            0f, 0f, 0f,        0f, 1f, 1f, 1f,     0f, 0f,           0f, // bottom left  3
-    };
-
-    // must be counter-clockwise order
-    private int[] elementArray = {
-            2, 1, 0, // top right triangle
-            0, 1, 3, // bottom left triangle
-    };
-
-    private int vaoID, vboID, eboID;
-
     protected Camera camera;
     protected Shader shader;
     protected Texture[] texture = new Texture[31]; // max number of textures supported by opengl
@@ -72,8 +58,9 @@ public abstract class Game {
         }
 
         // draw
-        VertexRenderer.render();
+        handleClickables();
         this.execute();
+        VertexRenderer.render();
 
         // Unbind
         VertexRenderer.unbind();
@@ -84,6 +71,27 @@ public abstract class Game {
             }
 
             texture[0].unbind();
+        }
+    }
+
+    private void handleClickables() {
+        ArrayList<GraphicsObject> objects = VertexRenderer.getGraphicsObjects();
+        for (GraphicsObject object : objects) {
+            if (!(object instanceof Clickable)) {
+                continue;
+            }
+
+            if (!((Clickable) object).contains(camera.screenToWorld(MouseListener.getMousePos()))) {
+                continue;
+            }
+
+            if (MouseListener.mouseButtonDown(MouseButton.LEFT)) {
+                ((Clickable) object).clickEvent(MouseButton.LEFT);
+            }
+
+            if (MouseListener.mouseButtonDown(MouseButton.RIGHT)) {
+                ((Clickable) object).clickEvent(MouseButton.RIGHT);
+            }
         }
     }
 
