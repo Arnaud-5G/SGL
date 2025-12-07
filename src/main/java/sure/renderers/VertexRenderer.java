@@ -2,6 +2,7 @@ package sure.renderers;
 
 import org.lwjgl.BufferUtils;
 import sure.objects.GraphicsObject;
+import sure.objects.Rectangle;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -78,7 +79,7 @@ public class VertexRenderer {
 
         GraphicsObject[] objectArr = objects.toArray(new GraphicsObject[0]);
 
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(totalVertices * GraphicsObject.numberOfAttributes);
+        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(totalVertices * GraphicsObject.NUMBER_OF_ATTRIBUTES);
         IntBuffer elementBuffer = BufferUtils.createIntBuffer(totalElements * 3);
 
         int vertexOffset = 0;

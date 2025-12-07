@@ -5,18 +5,18 @@ import sure.components.Clickable;
 import sure.listeners.MouseListener;
 import sure.listeners.MouseListener.*;
 
-public class Button extends GraphicsObject implements Clickable {
-    public Button(float x, float y) {
-        super(x, y);
+public class Button extends Rectangle implements Clickable {
+    public Button(float x, float y, float height, float width, int textureSlot) {
+        super(x, y, height, width, 1, textureSlot);
     }
 
     @Override
     public boolean contains(Vector3f pos) {
-        if (pos.y - height < 0 || pos.y - height > height) {
+        if (pos.y - y > height/2 || pos.y - y < -(height/2)) {
             return false;
         }
 
-        if (pos.x - width < 0 || pos.x - width > width) {
+        if (pos.x - x > width/2 || pos.x - x < -(width/2)) {
             return false;
         }
 

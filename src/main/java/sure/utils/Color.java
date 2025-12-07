@@ -1,10 +1,10 @@
 package sure.utils;
 
 public class Color {
-    float red;
-    float green;
-    float blue;
-    float alpha;
+    public float red;
+    public float green;
+    public float blue;
+    public float alpha;
 
     public Color(float r, float g, float b) {
         this(r, g, b, 1f);
