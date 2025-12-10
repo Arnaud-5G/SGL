@@ -9,17 +9,18 @@ public abstract class GraphicsObject {
     // attributes
     public float z;
     public int textureSlot;
-    public Color color = new Color(1, 1, 0);
+    public Color color;
 
     protected int numOfVertices;
     protected float[][] vertexPos;
     protected float[][] vertexColor;
     protected float[][] vertexUV;
 
-    public GraphicsObject(float zIndex, int textureSlot) {
+    public GraphicsObject(float zIndex, int textureSlot, int numOfVertices, Color color) {
         this.z = zIndex;
         this.textureSlot = textureSlot;
-        numOfVertices = 4;
+        this.numOfVertices = numOfVertices;
+        this.color = color;
         vertexPos = new float[numOfVertices][2];
         vertexColor = new float[numOfVertices][4];
         vertexUV = new float[numOfVertices][2];
@@ -45,11 +46,11 @@ public abstract class GraphicsObject {
     public float[][] generateColors() {
         float[][] colorArray = new float[numOfVertices][4];
 
-        for (float[] colorElement : vertexColor) {
-            colorElement[0] = color.red;
-            colorElement[1] = color.green;
-            colorElement[2] = color.blue;
-            colorElement[3] = color.alpha;
+        for (int i = 0; i < numOfVertices; i++) {
+            colorArray[i][0] = color.red;
+            colorArray[i][1] = color.green;
+            colorArray[i][2] = color.blue;
+            colorArray[i][3] = color.alpha;
         }
 
         return colorArray;

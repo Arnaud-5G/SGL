@@ -1,5 +1,7 @@
 package sure.objects;
 
+import sure.utils.Color;
+
 public class Rectangle extends GraphicsObject {
     public float x;
     public float y;
@@ -7,7 +9,7 @@ public class Rectangle extends GraphicsObject {
     public float height;
 
     public Rectangle(float x, float y, float height, float width, float zIndex, int textureSlot) {
-        super(zIndex, textureSlot);
+        super(zIndex, textureSlot, 4, new Color(1, 1, 0, 1));
 
         this.x = x;
         this.y = y;
@@ -42,7 +44,7 @@ public class Rectangle extends GraphicsObject {
 
     @Override
     public int[] makePartialEBO() {
-        int[] miniEBO; // TODO: support different shapes
+        int[] miniEBO;
 
         miniEBO = new int[]{
                 2, 1, 0, // top-right triangle
