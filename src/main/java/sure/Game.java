@@ -58,7 +58,7 @@ public abstract class Game {
         }
 
         // draw
-        handleClickables();
+        handleStandardComponents();
         this.execute();
         VertexRenderer.render();
 
@@ -74,23 +74,23 @@ public abstract class Game {
         }
     }
 
-    private void handleClickables() {
-        ArrayList<GraphicsObject> objects = VertexRenderer.getGraphicsObjects();
-        for (GraphicsObject object : objects) {
-            if (!(object instanceof Clickable)) {
-                continue;
-            }
+    private void handleStandardComponents() {
+        handleClickables();
+    }
 
-            if (!((Clickable) object).contains(camera.screenToWorld(MouseListener.getMousePos()))) {
+    private void handleClickables() {
+        ArrayList<Clickable> objects = VertexRenderer.getGraphicsObjects(Clickable.class);
+        for (Clickable object : objects) {
+            if (!(object.contains(camera.screenToWorld(MouseListener.getMousePos())))) {
                 continue;
             }
 
             if (MouseListener.mouseButtonDown(MouseButton.LEFT)) {
-                ((Clickable) object).clickEvent(MouseButton.LEFT);
+                object.clickEvent(MouseButton.LEFT);
             }
 
             if (MouseListener.mouseButtonDown(MouseButton.RIGHT)) {
-                ((Clickable) object).clickEvent(MouseButton.RIGHT);
+                object.clickEvent(MouseButton.RIGHT);
             }
         }
     }

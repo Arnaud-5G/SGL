@@ -27,6 +27,7 @@ public class Button extends Rectangle implements Clickable {
     public void clickEvent(MouseButton button) {
         if (button == MouseListener.MouseButton.LEFT) {
             textureSlot = 1;
+            System.out.println("AAA");
         }
     }
 }

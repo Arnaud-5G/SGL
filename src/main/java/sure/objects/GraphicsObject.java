@@ -3,6 +3,8 @@ package sure.objects;
 import sure.renderers.VertexRenderer;
 import sure.utils.Color;
 
+import java.awt.geom.Point2D;
+
 public abstract class GraphicsObject {
     public static final int NUMBER_OF_ATTRIBUTES = 10;
 
@@ -72,5 +74,9 @@ public abstract class GraphicsObject {
         }
 
         return miniVAO;
+    }
+
+    public float[][] getPoses() {
+        return vertexPos;
     }
 }

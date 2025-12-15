@@ -125,4 +125,15 @@ public class VertexRenderer {
     public static ArrayList<GraphicsObject> getGraphicsObjects() {
         return objects;
     }
+
+    public static <T> ArrayList<T> getGraphicsObjects(Class<T> extend) {
+        ArrayList<T> graphicsObjects = new ArrayList<>();
+        for (GraphicsObject object : objects) {
+            if (extend.isAssignableFrom(object.getClass())) {
+                graphicsObjects.add((T) object);
+            }
+        }
+
+        return graphicsObjects;
+    }
 }
