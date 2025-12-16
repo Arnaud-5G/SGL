@@ -7,6 +7,7 @@ public class Circle extends GraphicsObject {
     public float x;
     public float y;
     public float radius;
+    private float angle;
 
     public Circle(float x, float y, float radius, int numOfVertices, float zIndex, int textureSlot) {
         super(zIndex, textureSlot, (numOfVertices + 1) <= 0 ? 1 : numOfVertices + 1, new Color(1, 1, 0, 1));
@@ -14,11 +15,19 @@ public class Circle extends GraphicsObject {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.angle = 0;
     }
 
     @Override
     public int numberOfElements() {
         return numOfVertices;
+    }
+
+    /**
+     * @param angle in degrees
+     */
+    public void withAngle(float angle) {
+        this.angle = angle;
     }
 
     @Override
@@ -29,7 +38,7 @@ public class Circle extends GraphicsObject {
         double angle = (2 * Math.PI) / (numOfVertices - 1);
 
         for (int i = 1; i < poses.length; i++) {
-            poses[i] = getCirclePos(angle * (i - 1));
+            poses[i] = getCirclePos(angle * (i - 1) + Math.toRadians(this.angle));
         }
 
         return poses;
@@ -48,8 +57,8 @@ public class Circle extends GraphicsObject {
         uvs[0][1] = 0.5f;
 
         for (int i = 1; i < uvs.length; i++) {
-            uvs[i][0] = 0.5f + (float)(Math.sin(angle * (i - 1))) / 2;
-            uvs[i][1] = 0.5f + (float)(Math.cos(angle * (i - 1))) / 2;
+            uvs[i][0] = uvs[0][0] + (float)(Math.sin(angle * (i - 1))) / 2;
+            uvs[i][1] = uvs[0][1] + (float)(Math.cos(angle * (i - 1))) / 2;
         }
         return uvs;
     }

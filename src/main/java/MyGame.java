@@ -7,6 +7,7 @@ import sure.utils.Time;
 
 public class MyGame extends Game {
     Slider sliderV;
+    Slider sliderS;
     Slider sliderR;
     Circle circle;
 
@@ -22,8 +23,10 @@ public class MyGame extends Game {
     public void start() {
         sliderV = new Slider(1100, 600, 30, 200, 3, 100);
         sliderV.setValue(100);
-        sliderR = new Slider(1100, 500, 30, 200, -100, 200);
-        sliderR.setValue(20);
+        sliderS = new Slider(1100, 500, 30, 200, -100, 200);
+        sliderS.setValue(20);
+        sliderR = new Slider(1100, 400, 30, 200, -360, 360);
+        sliderR.setValue(0);
         circle = new Circle(300, 300, 50, 100, 1, 0);
     }
 
@@ -31,8 +34,8 @@ public class MyGame extends Game {
     public void execute() {
         shader.uploadFloat("uTime", Time.getScaledTime());
         VertexRenderer.remove(circle);
-        circle = new Circle(300, 300, sliderR.getValue(), (int) sliderV.getValue(), 0, 0);
-
+        circle = new Circle(300, 300, sliderS.getValue(), (int) sliderV.getValue(), 0, 0);
+        circle.withAngle(sliderR.getValue());
 //      System.out.println(Time.FPS());
 
 //      object2.x = camera.screenToWorld(MouseListener.getMousePos()).x;
