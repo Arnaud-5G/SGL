@@ -40,11 +40,16 @@ public class Circle extends GraphicsObject {
     }
 
     @Override
-    public float[][] generateUVs() { // TODO: remove placeholder
+    public float[][] generateUVs() {
         float[][] uvs = new float[numOfVertices][2];
-        for (int i = 0; i < uvs.length; i++) {
-            uvs[i][0] = 0;
-            uvs[i][1] = 0;
+        double angle = (2 * Math.PI) / (numOfVertices - 1);
+
+        uvs[0][0] = 0.5f;
+        uvs[0][1] = 0.5f;
+
+        for (int i = 1; i < uvs.length; i++) {
+            uvs[i][0] = 0.5f + (float)(Math.sin(angle * (i - 1))) / 2;
+            uvs[i][1] = 0.5f + (float)(Math.cos(angle * (i - 1))) / 2;
         }
         return uvs;
     }

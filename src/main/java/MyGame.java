@@ -20,7 +20,7 @@ public class MyGame extends Game {
 
     @Override
     public void start() {
-        sliderV = new Slider(1100, 600, 30, 200, 0, 100);
+        sliderV = new Slider(1100, 600, 30, 200, 3, 100);
         sliderV.setValue(100);
         sliderR = new Slider(1100, 500, 30, 200, -100, 200);
         sliderR.setValue(20);
@@ -32,7 +32,6 @@ public class MyGame extends Game {
         shader.uploadFloat("uTime", Time.getScaledTime());
         VertexRenderer.remove(circle);
         circle = new Circle(300, 300, sliderR.getValue(), (int) sliderV.getValue(), 0, 0);
-        System.out.println(sliderR.getValue());
 
 //      System.out.println(Time.FPS());
 
