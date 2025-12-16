@@ -1,8 +1,11 @@
 package sure.listeners;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import sure.Camera;
 import sure.Window;
+
+import java.util.Optional;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
@@ -15,6 +18,8 @@ public class MouseListener {
 
     private final boolean[] mouseButtonPressed = new boolean[3];
     private boolean isDragging;
+
+    private Camera currentGameCamera;
 
     public enum MouseButton {
         LEFT(0),
@@ -79,8 +84,16 @@ public class MouseListener {
         get().scrollY = yOffset;
     }
 
+    public static void attachCamera(Camera camera) {
+        MouseListener.get().currentGameCamera = camera;
+    }
+
     public static Vector2f getMousePos() {
         return new Vector2f((float) get().posX, (float) get().posY);
+    }
+
+    public static Vector3f getMouseGamePos() {
+        return MouseListener.get().currentGameCamera.screenToWorld(getMousePos());
     }
 
     public static float getX() {

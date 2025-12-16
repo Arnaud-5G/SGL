@@ -9,7 +9,7 @@ public class Circle extends GraphicsObject {
     public float radius;
 
     public Circle(float x, float y, float radius, int numOfVertices, float zIndex, int textureSlot) {
-        super(zIndex, textureSlot, numOfVertices + 1, new Color(1, 1, 0, 1));
+        super(zIndex, textureSlot, (numOfVertices + 1) <= 0 ? 1 : numOfVertices + 1, new Color(1, 1, 0, 1));
 
         this.x = x;
         this.y = y;

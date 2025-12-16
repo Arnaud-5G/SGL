@@ -1,6 +1,7 @@
 package sure;
 
 import sure.components.Clickable;
+import sure.components.Updating;
 import sure.listeners.MouseListener;
 import static sure.listeners.MouseListener.*;
 import sure.objects.GraphicsObject;
@@ -28,6 +29,8 @@ public abstract class Game {
         if (camera == null) {
             camera = new Camera(new Vector2f());
         }
+
+        MouseListener.attachCamera(camera);
 
         if (shader == null) {
             shader = new Shader("src/main/java/sure/shaders/default.glsl");
@@ -76,6 +79,14 @@ public abstract class Game {
 
     private void handleStandardComponents() {
         handleClickables();
+        handleUpdatings();
+    }
+
+    private void handleUpdatings() {
+        ArrayList<Updating> objects = VertexRenderer.getGraphicsObjects(Updating.class);
+        for (Updating object : objects) {
+            object.update();
+        }
     }
 
     private void handleClickables() {

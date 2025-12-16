@@ -2,7 +2,6 @@ package sure.renderers;
 
 import org.lwjgl.BufferUtils;
 import sure.objects.GraphicsObject;
-import sure.objects.Rectangle;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -84,7 +83,7 @@ public class VertexRenderer {
 
         int vertexOffset = 0;
         for (GraphicsObject graphicsObject : objectArr) {
-            graphicsObject.update();
+            graphicsObject.updateGraphics();
             vertexBuffer.put(graphicsObject.makePartialVAO());
 
             int[] localEBO = graphicsObject.makePartialEBO();

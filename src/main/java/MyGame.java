@@ -1,25 +1,14 @@
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import sure.Camera;
 import sure.Game;
-import sure.components.Clickable;
-import sure.listeners.KeyListener;
-import sure.listeners.MouseListener;
-import sure.objects.Button;
 import sure.objects.Circle;
-import sure.objects.Rectangle;
-import sure.renderers.Shader;
-import sure.renderers.Texture;
+import sure.objects.ui.Slider;
 import sure.renderers.VertexRenderer;
 import sure.utils.Assets;
-import sure.utils.Color;
 import sure.utils.Time;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 public class MyGame extends Game {
-    Circle object3;
-    Button object;
+    Slider sliderV;
+    Slider sliderR;
+    Circle circle;
 
     @Override
     public void load() {
@@ -27,21 +16,24 @@ public class MyGame extends Game {
         Assets.getShader("src/main/java/sure/shaders/blackAndWhite.glsl");
         texture[0] = Assets.getTexture("assets/Test Image1.png");
         texture[1] = Assets.getTexture("assets/Test Image2.png");
-
-        object3 = new Circle(300, 300, 300, 100, 1, -1);
-        object3.color = new Color(0, 0, 0, 1);
-
-        object = new Button(100, 100, 100, 100, -1);
     }
 
     @Override
     public void start() {
-
+        sliderV = new Slider(1100, 600, 30, 200, 0, 100);
+        sliderV.setValue(100);
+        sliderR = new Slider(1100, 500, 30, 200, -100, 200);
+        sliderR.setValue(20);
+        circle = new Circle(300, 300, 50, 100, 1, 0);
     }
 
     @Override
     public void execute() {
         shader.uploadFloat("uTime", Time.getScaledTime());
+        VertexRenderer.remove(circle);
+        circle = new Circle(300, 300, sliderR.getValue(), (int) sliderV.getValue(), 0, 0);
+        System.out.println(sliderR.getValue());
+
 //      System.out.println(Time.FPS());
 
 //      object2.x = camera.screenToWorld(MouseListener.getMousePos()).x;

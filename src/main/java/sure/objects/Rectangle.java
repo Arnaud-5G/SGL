@@ -25,20 +25,20 @@ public class Rectangle extends GraphicsObject {
     @Override
     public float[][] generatePoses() {
         return new float[][] {
-                {x + width / 2, y - height / 2}, // bottom right
-                {x - width / 2, y + height / 2}, // top left
-                {x + width / 2, y + height / 2}, // top right
-                {x - width / 2, y - height / 2}, // bottom left
+                {x - width / 2, y - height / 2}, // bottom left 3
+                {x - width / 2, y + height / 2}, // top left 1
+                {x + width / 2, y + height / 2}, // top right 2
+                {x + width / 2, y - height / 2}, // bottom right 0
         };
     }
 
     @Override
     public float[][] generateUVs() {
         return new float[][] {
-                {1, 0},
+                {0, 0},
                 {0, 1},
                 {1, 1},
-                {0, 0},
+                {1, 0},
         };
     }
 
@@ -47,8 +47,8 @@ public class Rectangle extends GraphicsObject {
         int[] miniEBO;
 
         miniEBO = new int[]{
-                2, 1, 0, // top-right triangle
-                0, 1, 3, // bottom-left triangle
+                2, 1, 3, // top-right triangle
+                3, 1, 0, // bottom-left triangle
         };
 
         return miniEBO;
