@@ -1,6 +1,7 @@
 package sure.objects;
 
 import org.joml.Vector2f;
+import sure.renderers.Texture;
 import sure.utils.Color;
 
 public class Circle extends GraphicsObject {
@@ -9,8 +10,8 @@ public class Circle extends GraphicsObject {
     public float radius;
     private float angle;
 
-    public Circle(float x, float y, float radius, int numOfVertices, float zIndex, int textureSlot) {
-        super(zIndex, textureSlot, (numOfVertices + 1) <= 0 ? 1 : numOfVertices + 1, new Color(1, 1, 0, 1));
+    public Circle(float x, float y, float radius, int numOfVertices, float zIndex, Texture texture) {
+        super(zIndex, texture, (numOfVertices + 1) <= 0 ? 1 : numOfVertices + 1, new Color(1, 1, 0, 1));
 
         this.x = x;
         this.y = y;

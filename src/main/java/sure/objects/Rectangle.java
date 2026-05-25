@@ -1,5 +1,6 @@
 package sure.objects;
 
+import sure.renderers.Texture;
 import sure.utils.Color;
 
 public class Rectangle extends GraphicsObject {
@@ -8,8 +9,8 @@ public class Rectangle extends GraphicsObject {
     public float width;
     public float height;
 
-    public Rectangle(float x, float y, float height, float width, float zIndex, int textureSlot) {
-        super(zIndex, textureSlot, 4, new Color(1, 1, 0, 1));
+    public Rectangle(float x, float y, float height, float width, float zIndex, Texture texture) {
+        super(zIndex, texture, 4, new Color(1, 1, 0, 1));
 
         this.x = x;
         this.y = y;

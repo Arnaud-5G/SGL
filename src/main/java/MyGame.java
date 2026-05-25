@@ -1,5 +1,5 @@
 import sure.Game;
-import sure.objects.Circle;
+import sure.objects.Rectangle;
 import sure.objects.ui.Slider;
 import sure.renderers.VertexRenderer;
 import sure.utils.Assets;
@@ -9,14 +9,15 @@ public class MyGame extends Game {
     Slider sliderV;
     Slider sliderS;
     Slider sliderR;
-    Circle circle;
+    Rectangle rectangle;
 
     @Override
     public void load() {
         shader = Assets.getShader("src/main/java/sure/shaders/default.glsl");
         Assets.getShader("src/main/java/sure/shaders/blackAndWhite.glsl");
-        texture[0] = Assets.getTexture("assets/Test Image1.png");
-        texture[1] = Assets.getTexture("assets/Test Image2.png");
+        textures[0] = Assets.getSprite("assets/Test Image1.png");
+        textures[1] = Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16);
+        textures[2] = Assets.getSprite("assets/Test Image2.png");
     }
 
     @Override
@@ -25,17 +26,16 @@ public class MyGame extends Game {
         sliderV.setValue(100);
         sliderS = new Slider(1100, 500, 30, 200, -100, 200);
         sliderS.setValue(20);
-        sliderR = new Slider(1100, 400, 30, 200, -360, 360);
+        sliderR = new Slider(1100, 400, 30, 200, 0, 5);
         sliderR.setValue(0);
-        circle = new Circle(300, 300, 50, 100, 1, 0);
+        rectangle = new Rectangle(300, 300, 50, 100, 1, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get(1));
     }
 
     @Override
     public void execute() {
         shader.uploadFloat("uTime", Time.getScaledTime());
-        VertexRenderer.remove(circle);
-        circle = new Circle(300, 300, sliderS.getValue(), (int) sliderV.getValue(), 0, 0);
-        circle.withAngle(sliderR.getValue());
+        VertexRenderer.remove(rectangle);
+        rectangle = new Rectangle(300, 300, sliderS.getValue(), (int) sliderV.getValue(), 0, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get((int) sliderR.getValue()));
 //      System.out.println(Time.FPS());
 
 //      object2.x = camera.screenToWorld(MouseListener.getMousePos()).x;

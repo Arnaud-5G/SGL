@@ -24,14 +24,14 @@ public class Shader {
         this.filepath = filepath;
         try {
             String source = new String(Files.readAllBytes(Paths.get(filepath)));
-            String[] shaders =  source.split("#type([a-zA-Z ]+)");
+            String[] shaders = source.split("#type([a-zA-Z ]+)");
 
             int index = 0;
             int i = 1;
             while(source.indexOf("#type", index) != -1) {
                 index = source.indexOf("#type", index) + "#type".length();
                 int eol = source.indexOf("\r\n", index);
-                String shaderName = source.substring(index, eol).trim();
+                String shaderName = source.substring(index, eol).toLowerCase().trim();
 
                 if (shaderName.equals("vertex")) {
                     vertexShaderSrc = shaders[i];

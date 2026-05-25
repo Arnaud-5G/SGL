@@ -1,5 +1,6 @@
 package sure.objects;
 
+import sure.renderers.Texture;
 import sure.renderers.VertexRenderer;
 import sure.utils.Color;
 
@@ -8,7 +9,7 @@ public abstract class GraphicsObject {
 
     // attributes
     public float z;
-    public int textureSlot;
+    public Texture texture;
     public Color color;
 
     protected int numOfVertices;
@@ -16,9 +17,9 @@ public abstract class GraphicsObject {
     protected float[][] vertexColor;
     protected float[][] vertexUV;
 
-    public GraphicsObject(float zIndex, int textureSlot, int numOfVertices, Color color) {
+    public GraphicsObject(float zIndex, Texture texture, int numOfVertices, Color color) {
         this.z = zIndex;
-        this.textureSlot = textureSlot;
+        this.texture = texture;
         this.numOfVertices = numOfVertices;
         this.color = color;
         vertexPos = new float[numOfVertices][2];
@@ -58,7 +59,17 @@ public abstract class GraphicsObject {
 
     public float[] makePartialVAO() {
         float[] miniVAO = new float[numOfVertices * NUMBER_OF_ATTRIBUTES];
+        int textureID = texture != null ? texture.getTextureID() : -1;
         for (int i = 0; i < numOfVertices; i++) {
+            float[] scaledUV = vertexUV[i];
+            if (texture != null) {
+                float uRange = texture.getUvcoords()[2][0]-texture.getUvcoords()[0][0];
+                float vRange = texture.getUvcoords()[2][1]-texture.getUvcoords()[0][1];
+                scaledUV[0] *= uRange;
+                scaledUV[1] *= vRange;
+                scaledUV[0] += texture.getUvcoords()[0][0];
+                scaledUV[1] += texture.getUvcoords()[0][1];
+            }
             miniVAO[i * NUMBER_OF_ATTRIBUTES + 0] = vertexPos[i][0];
             miniVAO[i * NUMBER_OF_ATTRIBUTES + 1] = vertexPos[i][1];
             miniVAO[i * NUMBER_OF_ATTRIBUTES + 2] = z;
@@ -66,9 +77,9 @@ public abstract class GraphicsObject {
             miniVAO[i * NUMBER_OF_ATTRIBUTES + 4] = vertexColor[i][1];
             miniVAO[i * NUMBER_OF_ATTRIBUTES + 5] = vertexColor[i][2];
             miniVAO[i * NUMBER_OF_ATTRIBUTES + 6] = vertexColor[i][3];
-            miniVAO[i * NUMBER_OF_ATTRIBUTES + 7] = vertexUV[i][0];
-            miniVAO[i * NUMBER_OF_ATTRIBUTES + 8] = vertexUV[i][1];
-            miniVAO[i * NUMBER_OF_ATTRIBUTES + 9] = (float) textureSlot;
+            miniVAO[i * NUMBER_OF_ATTRIBUTES + 7] = scaledUV[0];
+            miniVAO[i * NUMBER_OF_ATTRIBUTES + 8] = scaledUV[1];
+            miniVAO[i * NUMBER_OF_ATTRIBUTES + 9] = (float) textureID;
         }
 
         return miniVAO;

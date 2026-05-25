@@ -1,5 +1,9 @@
 make batch rendering
+fix Game.java textures not working after index 2
 make text rendering
+sync textureID from texture with texture applied
+add spacing to spritesheets
+make snap to int slider
 make Basic SoundSystem with FMOD
     -add SoundEffectSystem too later
 make very basic ParticleSystem using GraphicsObject

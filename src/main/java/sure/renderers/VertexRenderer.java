@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class VertexRenderer {
-    private static ArrayList<GraphicsObject> objects = new ArrayList<GraphicsObject>();
+    private static ArrayList<GraphicsObject> objects = new ArrayList<>();
     private static int totalVertices = 0;
     private static int totalElements = 0;
 

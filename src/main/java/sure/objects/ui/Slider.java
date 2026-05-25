@@ -2,6 +2,7 @@ package sure.objects.ui;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import sure.renderers.Texture;
 import sure.standardcomponents.Clickable;
 import sure.standardcomponents.Updating;
 import sure.listeners.MouseListener;
@@ -21,8 +22,8 @@ public class Slider {
         final float length;
         boolean isDragging = false;
 
-        public Thumb(float x, float y, float radius, int numOfVertices, float zIndex, int textureSlot, float length) {
-            super(x, y, radius, numOfVertices, zIndex, textureSlot);
+        public Thumb(float x, float y, float radius, int numOfVertices, float zIndex, Texture texture, float length) {
+            super(x, y, radius, numOfVertices, zIndex, texture);
             this.minx = x;
             this.length = length;
         }
@@ -62,8 +63,8 @@ public class Slider {
     }
 
     public Slider(float x, float y, float radius, float length, float min, float max) {
-        thumb = new Thumb(x - length / 2, y, radius, 100, 100, -1, length);
-        track = new Rectangle(x, y, radius, length, 99, -1);
+        thumb = new Thumb(x - length / 2, y, radius, 100, 100, null, length);
+        track = new Rectangle(x, y, radius, length, 99, null);
         track.color = new Color(0, 0, 0.5f);
         this.min = min;
         this.max = max;

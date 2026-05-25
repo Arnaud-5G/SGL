@@ -1,13 +1,13 @@
 package sure;
 
 import kotlin.Pair;
+import sure.renderers.Sprites.SpriteSheet;
 import sure.standardcomponents.Clickable;
 import sure.standardcomponents.Updating;
 import sure.listeners.MouseListener;
 import static sure.listeners.MouseListener.*;
 
 import sure.renderers.Shader;
-import sure.renderers.Texture;
 import sure.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL20.*;
 public abstract class Game {
     protected Camera camera;
     protected Shader shader;
-    protected Texture[] texture = new Texture[31]; // max number of textures supported by opengl
+    protected SpriteSheet[] textures = new SpriteSheet[31]; // max number of textures supported by opengl
     private ArrayList<Pair<Class, Consumer>> components = new ArrayList<>();
 
     final void init() {
@@ -57,14 +57,14 @@ public abstract class Game {
         shader.use();
         shader.uploadMath4f("uProjection", camera.getProjectionMatrix());
         shader.uploadMath4f("uView", camera.getViewMatrix());
-        for (int i = 0; i < texture.length; i++) {
-            if (texture[i] == null) {
+        for (int i = 0; i < textures.length; i++) {
+            if (textures[i] == null) {
                 continue;
             }
 
             shader.uploadTexture("uTextureSampler" + i, i);
             glActiveTexture(GL_TEXTURE0 + i);
-            texture[i].bind();
+            textures[i].bind();
         }
 
         // draw
@@ -75,12 +75,12 @@ public abstract class Game {
         // Unbind
         VertexRenderer.unbind();
         shader.detach();
-        for (int i = 0; i < texture.length; i++) {
-            if (texture[i] == null) {
+        for (SpriteSheet texture : textures) {
+            if (texture == null) {
                 continue;
             }
 
-            texture[0].unbind();
+            texture.unbind();
         }
     }
 
