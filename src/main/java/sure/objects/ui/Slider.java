@@ -2,8 +2,8 @@ package sure.objects.ui;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import sure.components.Clickable;
-import sure.components.Updating;
+import sure.standardcomponents.Clickable;
+import sure.standardcomponents.Updating;
 import sure.listeners.MouseListener;
 import sure.objects.Circle;
 import sure.objects.Rectangle;

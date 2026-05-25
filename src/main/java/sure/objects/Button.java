@@ -2,12 +2,10 @@ package sure.objects;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import sure.components.Clickable;
+import sure.standardcomponents.Clickable;
 import sure.listeners.MouseListener;
 import sure.listeners.MouseListener.*;
 import sure.utils.SureMath;
-
-import java.awt.geom.Point2D;
 
 public class Button extends Rectangle implements Clickable {
     public Button(float x, float y, float height, float width, int textureSlot) {
