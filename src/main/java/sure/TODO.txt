@@ -1,6 +1,4 @@
-fix Game.java textures not working after index 2
 make text rendering
-sync textureID from texture with texture applied
 add spacing to spritesheets
 make Basic SoundSystem with FMOD
     -add SoundEffectSystem too later

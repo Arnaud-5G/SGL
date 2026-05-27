@@ -12,6 +12,7 @@ import sure.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -20,7 +21,8 @@ import static org.lwjgl.opengl.GL20.*;
 public abstract class Game {
     protected Camera camera;
     protected Shader shader;
-    protected SpriteSheet[] textures = new SpriteSheet[31]; // max number of textures supported by opengl
+    private SpriteSheet[] textures = new SpriteSheet[16];
+    private final int[] textureSamplers = new int[textures.length];
     private ArrayList<Pair<Class, Consumer>> components = new ArrayList<>();
 
     final void init() {
@@ -29,6 +31,12 @@ public abstract class Game {
         // add standard components
         addComponent(Clickable.class, this::handleClickables);
         addComponent(Updating.class, this::handleUpdatings);
+
+        for (int i = 0; i < textureSamplers.length; i++) {
+            textureSamplers[i] = i;
+        }
+
+        // TODO: add default texture to slot 0 of textures[]
 
         this.load();
 
@@ -57,12 +65,12 @@ public abstract class Game {
         shader.use();
         shader.uploadMath4f("uProjection", camera.getProjectionMatrix());
         shader.uploadMath4f("uView", camera.getViewMatrix());
+        shader.uploadIntArray("uTextureSampler", textureSamplers);
         for (int i = 0; i < textures.length; i++) {
             if (textures[i] == null) {
                 continue;
             }
 
-            shader.uploadTexture("uTextureSampler" + i, i);
             glActiveTexture(GL_TEXTURE0 + i);
             textures[i].bind();
         }
@@ -84,11 +92,33 @@ public abstract class Game {
         }
     }
 
+    /**
+     * Will load the given texture at the appropriate id.
+     * @param spritesheet
+     * @return true when this function has overriden an already existing texture
+     */
+    public boolean use(SpriteSheet spritesheet) {
+        boolean wasTextureUsed = textures[spritesheet.getTextureID()] != null;
+        textures[spritesheet.getTextureID()] = spritesheet;
+        return wasTextureUsed;
+    }
+
     private void handleComponents() {
         for (Pair<Class, Consumer> component : components) {
-            component.getSecond().
-                    accept(VertexRenderer.getGraphicsObjects(component.getFirst()).toArray());
+            executeComponent(component);
         }
+    }
+
+    private <T> void executeComponent(Pair<Class, Consumer> component) {
+        Class<T> type = (Class<T>) component.getFirst();
+        Consumer<T[]> consumer = (Consumer<T[]>) component.getSecond();
+
+        Object[] rawObjects = VertexRenderer.getGraphicsObjects(type).toArray();
+
+        T[] typedArray = (T[]) Array.newInstance(type, rawObjects.length);
+        System.arraycopy(rawObjects, 0, typedArray, 0, rawObjects.length);
+
+        consumer.accept(typedArray);
     }
 
     /**

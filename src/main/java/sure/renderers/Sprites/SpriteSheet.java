@@ -29,8 +29,7 @@ public class SpriteSheet {
     public SpriteSheet(String filepath, int widthPerSprite, int heightPerSprite) {
         this.filepath = filepath;
 
-        this.textureID = glGenTextures()-1;
-        System.out.println(textureID);
+        this.textureID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -103,4 +102,6 @@ public class SpriteSheet {
     }
 
     public Texture get(int index) {return textures[index];}
+
+    public int getTextureID() {return textureID;}
 }

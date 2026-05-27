@@ -15,9 +15,9 @@ public class MyGame extends Game {
     public void load() {
         shader = Assets.getShader("src/main/java/sure/shaders/default.glsl");
         Assets.getShader("src/main/java/sure/shaders/blackAndWhite.glsl");
-        textures[0] = Assets.getSprite("assets/Test Image1.png");
-        textures[1] = Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16);
-        textures[2] = Assets.getSprite("assets/Test Image2.png");
+        this.use(Assets.getSprite("assets/Test Image1.png"));
+        this.use(Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16));
+        this.use(Assets.getSprite("assets/Test Image2.png"));
     }
 
     @Override
