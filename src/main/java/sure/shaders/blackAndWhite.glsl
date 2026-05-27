@@ -28,8 +28,7 @@ in vec2 fUV;
 in float fTextureSlot;
 
 uniform float uTime;
-uniform sampler2D uTextureSampler0;
-uniform sampler2D uTextureSampler1;
+uniform sampler2D uTextureSampler[16];
 
 out vec4 color;
 
@@ -38,10 +37,8 @@ void main() {
     color = vec4(brightness, brightness, brightness, 1);
 
     vec4 textureColor;
-    if(fTextureSlot == 0) {
-        textureColor = texture(uTextureSampler0, fUV);
-    } else if(fTextureSlot == 1) {
-        textureColor = texture(uTextureSampler1, fUV);
+    if(fTextureSlot != -1) {
+        color = texture(uTextureSampler[int(fTextureSlot)], fUV);
     }
 
     if(fTextureSlot != -1) {
