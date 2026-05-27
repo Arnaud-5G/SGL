@@ -98,20 +98,18 @@ public abstract class Game {
      * @param consumer - the script to be run every frame on the selected objects
      *                 (This will need to cast the accepted objects into the desired type)
      */
-    final <T> void addComponent(Class<T> componentInterface, Consumer<Object[]> consumer) {
+    final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
         components.add(new Pair<>(componentInterface, consumer));
     }
 
-    private void handleUpdatings(Object... objects) {
-        for (Object object : objects) {
-            Updating updating = (Updating) object;
+    private void handleUpdatings(Updating... objects) {
+        for (Updating updating : objects) {
             updating.update();
         }
     }
 
-    private void handleClickables(Object... objects) {
-        for (Object object : objects) {
-            Clickable clickable = (Clickable) object;
+    private void handleClickables(Clickable... objects) {
+        for (Clickable clickable : objects) {
             if (!(clickable.contains(camera.screenToWorld(MouseListener.getMousePos())))) {
                 continue;
             }
