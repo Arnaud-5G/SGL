@@ -1,6 +1,9 @@
 package sure;
 
 import kotlin.Pair;
+import sure.listeners.KeyListener;
+import sure.objects.GameObject;
+import sure.objects.GraphicsObject;
 import sure.renderers.Sprites.SpriteSheet;
 import sure.standardcomponents.Clickable;
 import sure.standardcomponents.Updating;
@@ -11,6 +14,8 @@ import sure.renderers.Shader;
 import sure.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
+import sure.standardcomponents.UsesFocus;
+import sure.utils.Assets;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -20,17 +25,21 @@ import static org.lwjgl.opengl.GL20.*;
 
 public abstract class Game {
     protected Camera camera;
-    protected Shader shader;
+    private Shader shader;
     private SpriteSheet[] textures = new SpriteSheet[16];
     private final int[] textureSamplers = new int[textures.length];
+    private static ArrayList<GameObject> gameObjects = new ArrayList<>();
     private ArrayList<Pair<Class, Consumer>> components = new ArrayList<>();
 
     final void init() {
         VertexRenderer.start();
 
+        this.use(Assets.getSpriteSheet("src/main/java/sure/assets/default_font.png", 20, 20));
+
         // add standard components
         addComponent(Clickable.class, this::handleClickables);
         addComponent(Updating.class, this::handleUpdatings);
+        addComponent(UsesFocus.class, this::handleFocus);
 
         for (int i = 0; i < textureSamplers.length; i++) {
             textureSamplers[i] = i;
@@ -75,9 +84,14 @@ public abstract class Game {
             textures[i].bind();
         }
 
-        // draw
+        // compute
         handleComponents();
         this.execute();
+
+        // update Listeners
+        KeyListener.updateListener();
+
+        // draw
         VertexRenderer.render();
 
         // Unbind
@@ -92,6 +106,8 @@ public abstract class Game {
         }
     }
 
+    public abstract void execute();
+
     /**
      * Will load the given texture at the appropriate id.
      * @param spritesheet
@@ -101,6 +117,43 @@ public abstract class Game {
         boolean wasTextureUsed = textures[spritesheet.getTextureID()] != null;
         textures[spritesheet.getTextureID()] = spritesheet;
         return wasTextureUsed;
+    }
+
+    /**
+     * Will load the given shader.
+     * @param shader
+     * @return true when this function has overriden an already loaded shader
+     */
+    public boolean use(Shader shader) {
+        boolean wasShaderLoaded = this.shader != null;
+        this.shader = shader;
+        shader.compile();
+        return wasShaderLoaded;
+    }
+
+    public static boolean use(GameObject object) {
+        boolean wasObjectPresent = gameObjects.contains(object);
+        gameObjects.add(object);
+        return wasObjectPresent;
+    }
+
+    public static boolean remove(GameObject object) {
+        return gameObjects.remove(object);
+    }
+
+    public static ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+
+    public static <T> ArrayList<T> getGameObjects(Class<T> extend) {
+        ArrayList<T> gameObjects = new ArrayList<>();
+        for (GameObject object : Game.gameObjects) {
+            if (extend.isAssignableFrom(object.getClass())) {
+                gameObjects.add((T) object);
+            }
+        }
+
+        return gameObjects;
     }
 
     private void handleComponents() {
@@ -113,7 +166,7 @@ public abstract class Game {
         Class<T> type = (Class<T>) component.getFirst();
         Consumer<T[]> consumer = (Consumer<T[]>) component.getSecond();
 
-        Object[] rawObjects = VertexRenderer.getGraphicsObjects(type).toArray();
+        Object[] rawObjects = getGameObjects(type).toArray();
 
         T[] typedArray = (T[]) Array.newInstance(type, rawObjects.length);
         System.arraycopy(rawObjects, 0, typedArray, 0, rawObjects.length);
@@ -154,5 +207,20 @@ public abstract class Game {
         }
     }
 
-    public abstract void execute();
+    private UsesFocus focusedObject;
+    private void handleFocus(UsesFocus... objects) {
+        for (UsesFocus usesFocus : objects) {
+            if (usesFocus.setFocus() == true) {
+                focusedObject = usesFocus;
+            }
+
+            if (usesFocus.removeFocus() == true && focusedObject != null && focusedObject.equals(usesFocus)) {
+                focusedObject = null;
+            }
+        }
+
+        if (focusedObject != null) {
+            focusedObject.isFocused();
+        }
+    }
 }

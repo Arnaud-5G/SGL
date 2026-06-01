@@ -2,6 +2,7 @@ package sure.objects.ui;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import sure.objects.GameObject;
 import sure.renderers.Texture;
 import sure.standardcomponents.Clickable;
 import sure.standardcomponents.Updating;
@@ -11,7 +12,7 @@ import sure.objects.Rectangle;
 import sure.utils.Color;
 import sure.utils.SureMath;
 
-public class Slider {
+public class Slider extends GameObject {
     private final Thumb thumb;
     private final Rectangle track;
     private final float min;

@@ -1,6 +1,7 @@
 package sure.renderers;
 
 import org.lwjgl.BufferUtils;
+import sure.Game;
 import sure.objects.GraphicsObject;
 
 import java.nio.FloatBuffer;
@@ -33,6 +34,7 @@ public class VertexRenderer {
         vboID = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
         glBufferData(GL_ARRAY_BUFFER, emptyFloatBuffer, GL_DYNAMIC_DRAW);
+
 
         IntBuffer emptyIntBuffer = BufferUtils.createIntBuffer(0);
         eboID = glGenBuffers();

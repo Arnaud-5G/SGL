@@ -4,7 +4,7 @@ import sure.renderers.Texture;
 import sure.renderers.VertexRenderer;
 import sure.utils.Color;
 
-public abstract class GraphicsObject {
+public abstract class GraphicsObject extends GameObject {
     public static final int NUMBER_OF_ATTRIBUTES = 10;
 
     // attributes
@@ -87,5 +87,11 @@ public abstract class GraphicsObject {
 
     public float[][] getPoses() {
         return vertexPos;
+    }
+
+    @Override
+    public void delete() {
+        VertexRenderer.remove(this);
+        super.delete();
     }
 }

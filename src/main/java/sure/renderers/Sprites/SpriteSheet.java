@@ -76,6 +76,7 @@ public class SpriteSheet {
         if (height % heightPerSprite != 0 || width % widthPerSprite != 0 || widthPerSprite <= 0 || heightPerSprite <= 0) {
             throw new IllegalStateException("SpriteSheet arguments are not valid");
         }
+
         int numOfRows = width / widthPerSprite;
         int numOfColumns = height / heightPerSprite;
         float uRange = (float) widthPerSprite / width;
@@ -83,11 +84,11 @@ public class SpriteSheet {
         textures = new Texture[numOfRows * numOfColumns];
         for (int i = 0; i < numOfColumns; i++) {
             for (int j = 0; j < numOfRows; j++) {
-                textures[(numOfColumns-1-i)*numOfRows + j] = new Texture(textureID, new float[][]{
-                        {(j+0)*uRange, (0-i)*vRange},
-                        {(j+0)*uRange, (1-i)*vRange},
-                        {(j+1)*uRange, (1-i)*vRange},
-                        {(j+1)*uRange, (0-i)*vRange},
+                textures[i*numOfRows + j] = new Texture(textureID, new float[][]{
+                        {(j+0)*uRange, (-(i+1))*vRange},
+                        {(j+0)*uRange, (-(i+0))*vRange},
+                        {(j+1)*uRange, (-(i+0))*vRange},
+                        {(j+1)*uRange, (-(i+1))*vRange},
                 });
             }
         }

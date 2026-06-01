@@ -23,12 +23,8 @@ public class Assets {
         }
     }
 
-    public static Texture getTexture(String filepath, int index) {
-        if (textures.containsKey(filepath)) {
-            return textures.get(filepath).get(index);
-        } else {
-            return null;
-        }
+    public static SpriteSheet getDefaultFont() {
+        return textures.get("src/main/java/sure/assets/default_font.png");
     }
 
     public static Sprite getSprite(String filepath) {
