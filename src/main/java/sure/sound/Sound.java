@@ -15,6 +15,8 @@ public class Sound {
 
     private boolean isPlaying;
 
+    private final float DEFAULT_VOLUME = 0.3f;
+
     public Sound(String filepath, boolean loops) {
         this.filepath = filepath;
 
@@ -53,7 +55,7 @@ public class Sound {
         alSourcei(sourceId, AL_BUFFER, bufferId);
         alSourcei(sourceId, AL_LOOPING, loops ? 1 : 0);
         alSourcei(sourceId, AL_POSITION, 0);
-        alSourcef(sourceId, AL_GAIN, 0.3f);
+        alSourcef(sourceId, AL_GAIN, DEFAULT_VOLUME);
 
         free(rawAudio);
     }
@@ -99,5 +101,17 @@ public class Sound {
             alSourcePlay(sourceId);
             isPlaying = true;
         }
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setVolume(float volume) {
+        alSourcef(sourceId, AL_GAIN, volume);
+    }
+
+    public float getVolume() {
+        return alGetSourcef(sourceId, AL_GAIN);
     }
 }

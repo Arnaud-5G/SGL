@@ -17,22 +17,18 @@ public class MyGame extends Game {
     Rectangle rectangle;
     Button playButton;
 
-    Sound mySound;
-
-
     @Override
     public void load() {
         this.use(Assets.getShader("src/main/java/sure/shaders/default.glsl"));
         this.use(Assets.getSprite("assets/Test Image1.png"));
         this.use(Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16));
         this.use(Assets.getSprite("assets/Test Image2.png"));
+        Assets.getSound("assets/Collision8-Bit.ogg");
     }
 
     @Override
     public void start() {
-        mySound = new Sound("C:\\Users\\20200791\\Desktop\\Coding\\Java\\Game\\SureGameLibrary\\assets\\Collision8-Bit.ogg", false);
-        mySound.play();
-        playButton = new Button(500, 300, 30, 30, null, ()-> mySound.play());
+        playButton = new Button(500, 300, 30, 30, null, ()-> Assets.getSound("assets/Collision8-Bit.ogg").play());
         sliderV = new Slider(1100, 600, 30, 200, 3, 100);
         sliderV.setValue(100);
         sliderS = new Slider(1100, 500, 30, 200, 0, 104);

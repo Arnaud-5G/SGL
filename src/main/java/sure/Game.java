@@ -138,6 +138,15 @@ public abstract class Game {
         return wasObjectPresent;
     }
 
+    /**
+     * Does nothing but helps to have all of your load() lines the same
+     * @param sound
+     * @return true
+     */
+    public static boolean use(Sound sound) {
+        return true;
+    }
+
     public static boolean remove(GameObject object) {
         return gameObjects.remove(object);
     }

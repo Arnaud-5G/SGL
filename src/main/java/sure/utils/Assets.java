@@ -4,6 +4,7 @@ import sure.renderers.Shader;
 import sure.renderers.Sprites.Sprite;
 import sure.renderers.Sprites.SpriteSheet;
 import sure.renderers.Texture;
+import sure.sound.Sound;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class Assets {
     private static Map<String, Shader> shaders = new HashMap<String, Shader>();
     private static Map<String, SpriteSheet> textures = new HashMap<String, SpriteSheet>();
+    private static Map<String, Sound> sounds = new HashMap<String, Sound>();
 
     public static Shader getShader(String filepath) {
         if (shaders.containsKey(filepath)) {
@@ -44,6 +46,20 @@ public class Assets {
             SpriteSheet spriteSheet = new SpriteSheet(filepath, widthPerSprite, heightPerSprite);
             textures.put(filepath, spriteSheet);
             return spriteSheet;
+        }
+    }
+
+    public static Sound getSound(String filepath) {
+        return getSound(filepath, false);
+    }
+
+    public static Sound getSound(String filepath, boolean looping) {
+        if (sounds.containsKey(filepath)) {
+            return sounds.get(filepath);
+        }  else {
+            Sound sound = new Sound(filepath, looping);
+            sounds.put(filepath, sound);
+            return sound;
         }
     }
 }
