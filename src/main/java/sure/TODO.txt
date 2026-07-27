@@ -1,4 +1,3 @@
-make text rendering
 add spacing to spritesheets
 make Basic SoundSystem with FMOD
     -add SoundEffectSystem too later

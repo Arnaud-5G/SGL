@@ -9,9 +9,13 @@ import sure.listeners.MouseListener.*;
 import sure.utils.Color;
 import sure.utils.SureMath;
 
+import java.lang.reflect.Executable;
+
 public class Button extends Rectangle implements Clickable {
-    public Button(float x, float y, float height, float width, Texture texture) {
+    Runnable onClick;
+    public Button(float x, float y, float height, float width, Texture texture, Runnable onClick) {
         super(x, y, height, width, 1, texture);
+        this.onClick = onClick;
     }
 
     @Override
@@ -22,7 +26,7 @@ public class Button extends Rectangle implements Clickable {
     @Override
     public void clickEvent(MouseButton button) {
         if (button == MouseListener.MouseButton.LEFT) {
-            color = new Color(1f, 1f, 1f, 1f);
+            onClick.run();
         }
     }
 }

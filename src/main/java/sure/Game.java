@@ -5,6 +5,7 @@ import sure.listeners.KeyListener;
 import sure.objects.GameObject;
 import sure.objects.GraphicsObject;
 import sure.renderers.Sprites.SpriteSheet;
+import sure.sound.Sound;
 import sure.standardcomponents.Clickable;
 import sure.standardcomponents.Updating;
 import sure.listeners.MouseListener;
@@ -204,6 +205,7 @@ public abstract class Game {
             if (MouseListener.mouseButtonDown(MouseButton.RIGHT)) {
                 clickable.clickEvent(MouseButton.RIGHT);
             }
+
         }
     }
 

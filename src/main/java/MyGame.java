@@ -1,9 +1,11 @@
 import sure.Game;
+import sure.objects.Button;
 import sure.objects.Rectangle;
 import sure.objects.ui.Slider;
 import sure.objects.ui.TextBox;
 import sure.objects.ui.TextField;
 import sure.renderers.VertexRenderer;
+import sure.sound.Sound;
 import sure.utils.Assets;
 import sure.utils.Time;
 
@@ -13,6 +15,10 @@ public class MyGame extends Game {
     Slider sliderR;
     TextField textV;
     Rectangle rectangle;
+    Button playButton;
+
+    Sound mySound;
+
 
     @Override
     public void load() {
@@ -24,6 +30,9 @@ public class MyGame extends Game {
 
     @Override
     public void start() {
+        mySound = new Sound("C:\\Users\\20200791\\Desktop\\Coding\\Java\\Game\\SureGameLibrary\\assets\\Collision8-Bit.ogg", false);
+        mySound.play();
+        playButton = new Button(500, 300, 30, 30, null, ()-> mySound.play());
         sliderV = new Slider(1100, 600, 30, 200, 3, 100);
         sliderV.setValue(100);
         sliderS = new Slider(1100, 500, 30, 200, 0, 104);

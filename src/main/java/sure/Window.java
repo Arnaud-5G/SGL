@@ -1,6 +1,10 @@
 package sure;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
 import sure.listeners.KeyListener;
 import sure.listeners.MouseListener;
@@ -10,6 +14,7 @@ import java.awt.*;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -20,6 +25,9 @@ public class Window {
     private String title;
 
     private long glfwWindow;
+
+    private long audioContext;
+    private long audioDevice;
 
     private Game game;
 
@@ -107,6 +115,21 @@ public class Window {
         glfwSwapInterval(1); // v-sync
         glfwShowWindow(glfwWindow);
 
+        // setup audio
+        String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
+        audioDevice = alcOpenDevice(defaultDeviceName);
+
+        int[] attributes = {0};
+        audioContext = alcCreateContext(audioDevice, attributes);
+        alcMakeContextCurrent(audioContext);
+
+        ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
+        ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+
+        if(!alCapabilities.OpenAL10) {
+            throw new IllegalStateException("OpenAL10 device is not supported");
+        }
+
         GL.createCapabilities(); // enable opengl
 
         glEnable(GL_BLEND);
@@ -138,5 +161,7 @@ public class Window {
         glfwDestroyWindow(glfwWindow);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+        alcDestroyContext(audioContext);
+        alcCloseDevice(audioDevice);
     }
 }
