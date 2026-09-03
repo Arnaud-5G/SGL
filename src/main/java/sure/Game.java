@@ -3,7 +3,6 @@ package sure;
 import kotlin.Pair;
 import sure.listeners.KeyListener;
 import sure.objects.GameObject;
-import sure.objects.GraphicsObject;
 import sure.renderers.Sprites.SpriteSheet;
 import sure.sound.Sound;
 import sure.standardcomponents.Clickable;
@@ -221,11 +220,11 @@ public abstract class Game {
     private UsesFocus focusedObject;
     private void handleFocus(UsesFocus... objects) {
         for (UsesFocus usesFocus : objects) {
-            if (usesFocus.setFocus() == true) {
+            if (usesFocus.shouldBeFocused() == true) {
                 focusedObject = usesFocus;
             }
 
-            if (usesFocus.removeFocus() == true && focusedObject != null && focusedObject.equals(usesFocus)) {
+            if (usesFocus.shouldNotBeFocused() == true && focusedObject != null && focusedObject.equals(usesFocus)) {
                 focusedObject = null;
             }
         }

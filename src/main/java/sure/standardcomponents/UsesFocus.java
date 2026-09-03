@@ -1,9 +1,9 @@
 package sure.standardcomponents;
 
 public interface UsesFocus {
-    public boolean setFocus();
+    public boolean shouldBeFocused();
 
-    public boolean removeFocus();
+    public boolean shouldNotBeFocused();
 
     public void isFocused();
 }
