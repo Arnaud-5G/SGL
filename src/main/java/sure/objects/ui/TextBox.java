@@ -11,6 +11,8 @@ public class TextBox extends GameObject {
     public final float HEIGHT = 20;
     public final float WIDTH = 20;
 
+    public static final char NULL_CHAR = '`' - ' ';
+
     SpriteSheet font;
     final ArrayList<Character> characters = new ArrayList<Character>();
     float scale = 1;
@@ -43,18 +45,40 @@ public class TextBox extends GameObject {
 
     public void write(String text) {
         for(char c : text.toCharArray()) {
-            characters.add(new Character(x + (WIDTH*scale)/2 + characters.size()*WIDTH*scale, y + (HEIGHT*scale)/2, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+            switch (c) {
+                case '\t' :
+                    tab();
+                    continue;
+                case '\n' :
+                    newline();
+                    continue;
+            }
+            write(c);
         }
     }
 
     public void write(char c) {
-        characters.add(new Character(x + (WIDTH*scale)/2 + characters.size()*WIDTH*scale, y + (HEIGHT*scale)/2, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+        if (characters.size() > 0) {
+            characters.add(new Character(characters.getLast().x + WIDTH*scale, characters.getLast().y, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+        } else {
+            characters.add(new Character(x + (WIDTH*scale)/2, y + (HEIGHT*scale)/2, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+        }
     }
 
     public void backspace() {
         if (characters.size() > 0) {
             characters.getLast().delete();
             characters.remove(characters.getLast());
+        }
+    }
+
+    public void tab() {
+        write("    ");
+    }
+
+    public void newline() {
+        if (characters.size() > 0) {
+            characters.add(new Character(x - WIDTH*scale/2, characters.getLast().y - HEIGHT*scale, HEIGHT*scale, 0, zIndex, '\n', font));
         }
     }
 
@@ -72,19 +96,25 @@ public class TextBox extends GameObject {
     }
 
     private static class Character extends Rectangle {
+        private final char c;
+
         private Character(float x, float y, float height, float width, float zIndex, char character, SpriteSheet font) {
             super(x, y, height, width, zIndex, font.get(getFontIndex(character, font)));
+            this.c = character;
         }
 
         private static int getFontIndex(char character, SpriteSheet font) {
             int index;
             try {
+                if (character == '\n') {
+                    return NULL_CHAR;
+                }
                 index = character - ' ';
                 font.get(index);
                 return index;
             } catch (Exception e) {
                 e.printStackTrace();
-                return '`' - ' ';
+                return NULL_CHAR;
             }
         }
     }

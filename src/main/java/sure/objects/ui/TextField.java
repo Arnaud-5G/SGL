@@ -39,7 +39,7 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
 
     private boolean shouldFocus = false;
     @Override
-    public boolean setFocus() {
+    public boolean shouldBeFocused() {
         boolean temp = shouldFocus;
         shouldFocus = false;
         return temp;
@@ -47,7 +47,7 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
 
     private boolean shouldRemoveFocus = false;
     @Override
-    public boolean removeFocus() {
+    public boolean shouldNotBeFocused() {
         boolean temp = shouldRemoveFocus;
         shouldRemoveFocus = false;
         return temp;
@@ -67,13 +67,15 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
                     delete();
                     continue;
                 }
-                case GLFW_KEY_ENTER -> {
-                    continue;
-                }
                 case GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT -> {
                     continue;
                 }
                 case GLFW_KEY_TAB -> {
+                    tab();
+                    continue;
+                }
+                case GLFW_KEY_ENTER -> {
+                    newline();
                     continue;
                 }
                 case GLFW_KEY_ESCAPE -> {

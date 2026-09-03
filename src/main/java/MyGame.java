@@ -36,9 +36,9 @@ public class MyGame extends Game {
         sliderR = new Slider(1100, 400, 30, 200, 0, 5);
         sliderR.setValue(0);
         rectangle = new Rectangle(300, 300, 50, 100, 1, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get(1));
-        textV = new TextField(0, 0, 0);
-        textV.scale(5);
-        textV.set("B");
+        textV = new TextField(0, 200, 0);
+        textV.scale(3);
+        textV.set("B\ta");
         new Rectangle(100, 100, 50, 50, 0, Assets.getSprite("assets/Test Image1.png").get());
     }
 
