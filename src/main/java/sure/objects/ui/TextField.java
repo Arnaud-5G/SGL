@@ -7,15 +7,19 @@ import sure.listeners.MouseListener;
 import sure.objects.Rectangle;
 import sure.renderers.Sprites.SpriteSheet;
 import sure.standardcomponents.Clickable;
+import sure.standardcomponents.Updating;
 import sure.standardcomponents.UsesFocus;
 import sure.utils.Assets;
 import sure.utils.Color;
+import sure.utils.Time;
 
 public class TextField extends TextBox implements Clickable, UsesFocus {
-    final Rectangle cursor;
+    static final float CHAR_TO_CURSOR_WIDTH = 1f/10f;
+    static final float MAX_TIME_BACKSPACE = 1f;
+    static float timeHoldingBackspace = 0f;
+    final TextCursor cursor;
     int cursorIndex = 0;
     int lastFieldSize = 0;
-    final float CHAR_TO_CURSOR_WIDTH = 1f/10f;
 
     public TextField(float x, float y, float zIndex) {
         this(Assets.getDefaultFont(), x, y, zIndex);
@@ -23,8 +27,7 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
 
     public TextField(SpriteSheet font, float x, float y, float zIndex) {
         super(font, x, y, zIndex);
-        cursor = new Rectangle(x, y, HEIGHT*scale, WIDTH*scale*CHAR_TO_CURSOR_WIDTH, zIndex+1, null);
-        cursor.color = Color.TRANSPARENT;
+        cursor = new TextCursor(x, y, HEIGHT * scale, WIDTH * scale * CHAR_TO_CURSOR_WIDTH, zIndex + 1);
     }
 
     @Override
@@ -84,14 +87,14 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
     public boolean shouldNotBeFocused() {
         boolean temp = shouldRemoveFocus;
         shouldRemoveFocus = false;
-        cursor.color = Color.TRANSPARENT;
+        cursor.shouldBlink(false);
         return temp;
     }
 
 
     @Override
     public void isFocused() {
-        cursor.color = Color.BLACK;
+        cursor.shouldBlink(true);
 
         for(int i = 0; i < KeyListener.getPressedKeys().length; i++) {
             if(!KeyListener.getPressedKeys()[i]) continue;
@@ -133,10 +136,43 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
                 }
             }
 
+
             moveCursor(cursorIndex + (characters.size()) - lastFieldSize);
             write((char) i, cursorIndex);
         }
 
+        if (KeyListener.getDownKeys()[GLFW_KEY_BACKSPACE]) {
+            timeHoldingBackspace += Time.deltaTime();
+        } else {
+            timeHoldingBackspace = 0f;
+        }
+
+        if (timeHoldingBackspace >= MAX_TIME_BACKSPACE) {
+            backspace(cursorIndex);
+        }
         moveCursor(cursorIndex + (characters.size()) - lastFieldSize);
+    }
+
+    protected static class TextCursor extends Rectangle implements Updating {
+        protected static final float TIME_PER_BLINK = 0.5f;
+        private boolean shouldBlink = false;
+
+        public TextCursor(float x, float y, float height, float width, float zIndex) {
+            super(x, y, height, width, zIndex, null);
+            this.color = Color.TRANSPARENT;
+        }
+
+        @Override
+        public void update() {
+            if (shouldBlink && Math.floor(Time.getScaledTime() / TIME_PER_BLINK) % 2 == 0) {
+                this.color = Color.BLACK;
+            } else {
+                this.color = Color.TRANSPARENT;
+            }
+        }
+
+        public void shouldBlink(boolean shouldBlink) {
+            this.shouldBlink = shouldBlink;
+        }
     }
 }

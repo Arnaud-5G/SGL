@@ -83,7 +83,7 @@ public class TextBox extends GameObject {
     }
 
     public void backspace(int index) {
-        if (!characters.isEmpty()) {
+        if (!characters.isEmpty() && index > 0) {
             String temp = gatherAllCharsAfter(index);
             characters.get(index-1).delete();
             characters.remove(index-1);
