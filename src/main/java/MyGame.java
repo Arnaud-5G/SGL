@@ -14,6 +14,7 @@ public class MyGame extends Game {
     Slider sliderS;
     Slider sliderR;
     TextField textV;
+    TextBox text;
     Rectangle rectangle;
     Button playButton;
 
@@ -39,11 +40,14 @@ public class MyGame extends Game {
         textV = new TextField(0, 200, 0);
         textV.scale(3);
         textV.set("B\ta");
+        text = new TextBox(0, 600, 1);
+        text.scale(3);
         new Rectangle(100, 100, 50, 50, 0, Assets.getSprite("assets/Test Image1.png").get());
     }
 
     @Override
     public void execute() {
+        text.set(textV.getText());
         Assets.getShader("src/main/java/sure/shaders/default.glsl").uploadFloat("uTime", Time.getScaledTime());
         VertexRenderer.remove(rectangle);
         rectangle = new Rectangle(300, 300, sliderS.getValue(), (int) sliderV.getValue(), 0, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get((int) sliderR.getValue()));

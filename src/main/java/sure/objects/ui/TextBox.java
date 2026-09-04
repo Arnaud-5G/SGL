@@ -6,6 +6,7 @@ import sure.renderers.Sprites.SpriteSheet;
 import sure.utils.Assets;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TextBox extends GameObject {
     public final float HEIGHT = 20;
@@ -21,6 +22,8 @@ public class TextBox extends GameObject {
     public float y;
     public float zIndex;
 
+    protected String text = "";
+
     public TextBox(float x, float y, float zIndex) {
         this.font = Assets.getDefaultFont();
         this.x = x;
@@ -35,7 +38,7 @@ public class TextBox extends GameObject {
         this.zIndex = zIndex;
     }
 
-    public void scale(float scale) {
+    public void scale(float scale) { // TODO: fix
         this.scale = scale;
         for (Character character : characters) {
             character.height = HEIGHT * scale;
@@ -50,7 +53,7 @@ public class TextBox extends GameObject {
                     tab();
                     continue;
                 case '\n' :
-                    newline();
+                    newline(characters.size());
                     continue;
             }
             write(c);
@@ -58,17 +61,34 @@ public class TextBox extends GameObject {
     }
 
     public void write(char c) {
-        if (characters.size() > 0) {
-            characters.add(new Character(characters.getLast().x + WIDTH*scale, characters.getLast().y, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+        write(c, characters.size());
+    }
+
+    public void write(char c, int index) {
+        if (c == '\n') {
+            newline(index);
+            return;
+        }
+
+        String temp = gatherAllCharsAfter(index);
+        if (!characters.isEmpty() && index > 0) {
+            characters.add(index, new Character(characters.get(index-1).x + WIDTH*scale, characters.get(index-1).y, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
         } else {
             characters.add(new Character(x + (WIDTH*scale)/2, y + (HEIGHT*scale)/2, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
         }
+
+        text = text.substring(0, (index < characters.size() ? index : 0));
+        text += c;
+        write(temp);
     }
 
-    public void backspace() {
-        if (characters.size() > 0) {
-            characters.getLast().delete();
-            characters.remove(characters.getLast());
+    public void backspace(int index) {
+        if (!characters.isEmpty()) {
+            String temp = gatherAllCharsAfter(index);
+            characters.get(index-1).delete();
+            characters.remove(index-1);
+            text = text.substring(0, index-1) + (index < text.length() ? text.substring(index) : "");
+            write(temp);
         }
     }
 
@@ -76,10 +96,37 @@ public class TextBox extends GameObject {
         write("    ");
     }
 
-    public void newline() {
-        if (characters.size() > 0) {
-            characters.add(new Character(x - WIDTH*scale/2, characters.getLast().y - HEIGHT*scale, HEIGHT*scale, 0, zIndex, '\n', font));
+    public void newline(int index) {
+        String temp = gatherAllCharsAfter(index);
+        if (!characters.isEmpty() && index > 0) {
+            characters.add(index, new Character(x - WIDTH*scale/2, characters.getLast().y - HEIGHT*scale, HEIGHT*scale, 0, zIndex, '\n', font));
+
+        } else {
+            characters.add(new Character(x - WIDTH*scale/2, y - HEIGHT*scale/2, HEIGHT*scale, 0, zIndex, '\n', font));
         }
+
+        text = text.substring(0, index) + '\n' + text.substring(index);
+        write(temp);
+    }
+
+    /**
+     * Removes and collects all Characters after the specified index.
+     * @param index
+     * @return a String containing all characters after a certain index in the list
+     */
+    protected String gatherAllCharsAfter(int index) {
+        String temp = "";
+        if (index < characters.size()) {
+            temp = text.substring(index);
+            List<Character> subList = characters.subList(index, characters.size());
+            for (Character character : subList) {
+                character.delete();
+            }
+
+            characters.removeAll(subList);
+        }
+
+        return temp;
     }
 
     public void set(String text) {
@@ -93,17 +140,22 @@ public class TextBox extends GameObject {
         }
 
         characters.clear();
+        text = "";
     }
 
-    private static class Character extends Rectangle {
-        private final char c;
+    public String getText() {
+        return text;
+    }
 
-        private Character(float x, float y, float height, float width, float zIndex, char character, SpriteSheet font) {
+    protected static class Character extends Rectangle {
+        protected final char c;
+
+        protected Character(float x, float y, float height, float width, float zIndex, char character, SpriteSheet font) {
             super(x, y, height, width, zIndex, font.get(getFontIndex(character, font)));
             this.c = character;
         }
 
-        private static int getFontIndex(char character, SpriteSheet font) {
+        protected static int getFontIndex(char character, SpriteSheet font) {
             int index;
             try {
                 if (character == '\n') {
