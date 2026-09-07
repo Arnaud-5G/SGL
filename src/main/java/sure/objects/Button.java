@@ -9,8 +9,6 @@ import sure.listeners.MouseListener.*;
 import sure.utils.Color;
 import sure.utils.SureMath;
 
-import java.lang.reflect.Executable;
-
 public class Button extends Rectangle implements Clickable {
     Runnable onClick;
     public Button(float x, float y, float height, float width, Texture texture, Runnable onClick) {

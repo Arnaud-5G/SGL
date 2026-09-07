@@ -32,6 +32,7 @@ public class SpriteSheet {
         this.textureID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureID);
 
+        // repeat texture when uv coords are out of bounds
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 

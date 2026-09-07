@@ -185,12 +185,11 @@ public abstract class Game {
 
     /**
      * This method is used to add component scripts to interfaces.
-     * @apiNote This process is not reversible mid-execution.
+     * @apiNote This process is not reversible at runtime.
      * @param componentInterface - an interface
      * @param consumer - the script to be run every frame on the selected objects
-     *                 (This will need to cast the accepted objects into the desired type)
      */
-    final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
+    public final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
         components.add(new Pair<>(componentInterface, consumer));
     }
 

@@ -38,12 +38,20 @@ public class TextBox extends GameObject {
         this.zIndex = zIndex;
     }
 
-    public void scale(float scale) { // TODO: fix
+    public float getHeight() {
+        return HEIGHT * scale;
+    }
+
+    public float getWidth() {
+        return WIDTH * scale;
+    }
+
+    public void scale(float scale) {
         this.scale = scale;
-        for (Character character : characters) {
-            character.height = HEIGHT * scale;
-            character.width = WIDTH * scale;
-        }
+
+        String temp = this.getText();
+        this.clear();
+        this.write(temp);
     }
 
     public void write(String text) {
@@ -72,9 +80,9 @@ public class TextBox extends GameObject {
 
         String temp = gatherAllCharsAfter(index);
         if (!characters.isEmpty() && index > 0) {
-            characters.add(index, new Character(characters.get(index-1).x + WIDTH*scale, characters.get(index-1).y, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+            characters.add(index, new Character(characters.get(index-1).x + getWidth(), characters.get(index-1).y, getHeight(), getWidth(), zIndex, c, font));
         } else {
-            characters.add(new Character(x + (WIDTH*scale)/2, y + (HEIGHT*scale)/2, HEIGHT*scale, WIDTH*scale, zIndex, c, font));
+            characters.add(new Character(x + (getWidth())/2, y + (getHeight())/2, getHeight(), getWidth(), zIndex, c, font));
         }
 
         text = text.substring(0, (index < characters.size() ? index : 0));
@@ -99,10 +107,10 @@ public class TextBox extends GameObject {
     public void newline(int index) {
         String temp = gatherAllCharsAfter(index);
         if (!characters.isEmpty() && index > 0) {
-            characters.add(index, new Character(x - WIDTH*scale/2, characters.getLast().y - HEIGHT*scale, HEIGHT*scale, 0, zIndex, '\n', font));
+            characters.add(index, new Character(x - getWidth()/2, characters.getLast().y - getHeight(), getHeight(), 0, zIndex, '\n', font));
 
         } else {
-            characters.add(new Character(x - WIDTH*scale/2, y - HEIGHT*scale/2, HEIGHT*scale, 0, zIndex, '\n', font));
+            characters.add(new Character(x - getWidth()/2, y - getHeight()/2, getHeight(), 0, zIndex, '\n', font));
         }
 
         text = text.substring(0, index) + '\n' + text.substring(index);

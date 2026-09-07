@@ -2,6 +2,9 @@ package sure.objects.ui;
 
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
+
+import java.util.ArrayList;
+
 import sure.listeners.KeyListener;
 import sure.listeners.MouseListener;
 import sure.objects.Rectangle;
@@ -14,12 +17,12 @@ import sure.utils.Color;
 import sure.utils.Time;
 
 public class TextField extends TextBox implements Clickable, UsesFocus {
-    static final float CHAR_TO_CURSOR_WIDTH = 1f/10f;
-    static final float MAX_TIME_BACKSPACE = 1f;
-    static float timeHoldingBackspace = 0f;
-    final TextCursor cursor;
-    int cursorIndex = 0;
-    int lastFieldSize = 0;
+    protected static final float CHAR_TO_CURSOR_WIDTH = 1f/10f;
+    protected static final float MAX_TIME_BACKSPACE = 1f;
+    protected static float timeHoldingBackspace = 0f;
+    protected final TextCursor cursor;
+    protected int cursorIndex = 0;
+    protected int lastFieldSize = 0;
 
     public TextField(float x, float y, float zIndex) {
         this(Assets.getDefaultFont(), x, y, zIndex);
@@ -27,34 +30,34 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
 
     public TextField(SpriteSheet font, float x, float y, float zIndex) {
         super(font, x, y, zIndex);
-        cursor = new TextCursor(x, y, HEIGHT * scale, WIDTH * scale * CHAR_TO_CURSOR_WIDTH, zIndex + 1);
+        cursor = new TextCursor(x, y, getHeight(), getWidth() * CHAR_TO_CURSOR_WIDTH, zIndex + 1);
     }
 
     @Override
     public void scale(float scale) {
         super.scale(scale);
-        cursor.height = HEIGHT*scale;
-        cursor.width = WIDTH*scale*CHAR_TO_CURSOR_WIDTH;
+        cursor.height = getHeight();
+        cursor.width = getWidth()*CHAR_TO_CURSOR_WIDTH;
     }
 
     public void moveCursor(int index) {
         cursorIndex = Math.clamp(index, 0, characters.size());
 
         if (!characters.isEmpty() && cursorIndex > 0) {
-            cursor.x = characters.get(cursorIndex-1).x+WIDTH*scale/2;
+            cursor.x = characters.get(cursorIndex-1).x+getWidth()/2;
             cursor.y = characters.get(cursorIndex-1).y;
         } else {
-            cursor.x = x + WIDTH*scale*CHAR_TO_CURSOR_WIDTH/2;
-            cursor.y = y + WIDTH*scale/2;
+            cursor.x = x + getWidth()*CHAR_TO_CURSOR_WIDTH/2;
+            cursor.y = y + getWidth()/2;
         }
 
         lastFieldSize = characters.size();
     }
 
     @Override
-    public boolean contains(Vector3f pos) {
-        if  (pos.x < x || pos.x > x + (WIDTH*scale)/2 + characters.size()*WIDTH*scale ||
-            (pos.y < y || pos.y > y + (HEIGHT*scale)/2 + HEIGHT*scale)) {
+    public boolean contains(Vector3f pos) { // TODO: fix
+        if  (pos.x < x || pos.x > x + (getWidth())/2 + characters.size()*getWidth() ||
+            (pos.y < y || pos.y > y + (getHeight())/2 + getHeight())) {
             if (MouseListener.mouseButtonDown(MouseListener.MouseButton.LEFT)) {
                 shouldRemoveFocus = true;
             }
@@ -76,7 +79,7 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
     public boolean shouldBeFocused() {
         boolean temp = shouldFocus;
         shouldFocus = false;
-        if(temp) { // TODO: remove sketchyness later
+        if(temp) {
             moveCursor(characters.size());
         }
         return temp;
@@ -141,6 +144,7 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
             write((char) i, cursorIndex);
         }
 
+        // check if backspace is held down
         if (KeyListener.getDownKeys()[GLFW_KEY_BACKSPACE]) {
             timeHoldingBackspace += Time.deltaTime();
         } else {
@@ -150,6 +154,8 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
         if (timeHoldingBackspace >= MAX_TIME_BACKSPACE) {
             backspace(cursorIndex);
         }
+
+        // move cursor if the textBox was modified
         moveCursor(cursorIndex + (characters.size()) - lastFieldSize);
     }
 

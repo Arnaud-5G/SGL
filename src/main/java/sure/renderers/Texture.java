@@ -1,8 +1,8 @@
 package sure.renderers;
 
 public class Texture {
-    private int textureID;
-    private float[][] uvcoords = new float[4][2];
+    protected int textureID;
+    protected float[][] uvcoords = new float[4][2];
 
     public Texture(int textureID, float[][] uvcoords) {
         this.textureID = textureID;
