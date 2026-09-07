@@ -1,0 +1,235 @@
+package sure.basepackage;
+
+import kotlin.Pair;
+import sure.basepackage.listeners.KeyListener;
+import sure.basepackage.objects.GameObject;
+import sure.basepackage.renderers.Sprites.SpriteSheet;
+import sure.basepackage.sound.Sound;
+import sure.basepackage.standardcomponents.Clickable;
+import sure.basepackage.standardcomponents.Updating;
+import sure.basepackage.listeners.MouseListener;
+import static sure.basepackage.listeners.MouseListener.*;
+
+import sure.basepackage.renderers.Shader;
+import sure.basepackage.renderers.VertexRenderer;
+
+import org.joml.Vector2f;
+import sure.basepackage.standardcomponents.UsesFocus;
+import sure.basepackage.utils.Assets;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
+import static org.lwjgl.opengl.GL20.*;
+
+public abstract class Game {
+    protected Camera camera;
+    private Shader shader;
+    private SpriteSheet[] textures = new SpriteSheet[16];
+    private final int[] textureSamplers = new int[textures.length];
+    private static ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private ArrayList<Pair<Class, Consumer>> components = new ArrayList<>();
+
+    final void init() {
+        VertexRenderer.start();
+
+        this.use(Assets.getSpriteSheet("src/main/java/sure/basepackage/assets/default_font.png", 20, 20));
+
+        // add standard components
+        addComponent(Clickable.class, this::handleClickables);
+        addComponent(Updating.class, this::handleUpdatings);
+        addComponent(UsesFocus.class, this::handleFocus);
+
+        for (int i = 0; i < textureSamplers.length; i++) {
+            textureSamplers[i] = i;
+        }
+
+        // TODO: add default texture to slot 0 of textures[]
+
+        this.load();
+
+        // force load required objects
+        if (camera == null) {
+            camera = new Camera(new Vector2f());
+        }
+
+        MouseListener.attachCamera(camera);
+
+        if (shader == null) {
+            shader = new Shader("src/main/java/sure/basepackage/shaders/default.glsl");
+        }
+        shader.compile();
+
+        this.start();
+    }
+
+    public abstract void load();
+
+    public abstract void start();
+
+    final void update() {
+        VertexRenderer.bind();
+        // bind
+        shader.use();
+        shader.uploadMath4f("uProjection", camera.getProjectionMatrix());
+        shader.uploadMath4f("uView", camera.getViewMatrix());
+        shader.uploadIntArray("uTextureSampler", textureSamplers);
+        for (int i = 0; i < textures.length; i++) {
+            if (textures[i] == null) {
+                continue;
+            }
+
+            glActiveTexture(GL_TEXTURE0 + i);
+            textures[i].bind();
+        }
+
+        // compute
+        handleComponents();
+        this.execute();
+
+        // update Listeners
+        KeyListener.updateListener();
+
+        // draw
+        VertexRenderer.render();
+
+        // Unbind
+        VertexRenderer.unbind();
+        shader.detach();
+        for (SpriteSheet texture : textures) {
+            if (texture == null) {
+                continue;
+            }
+
+            texture.unbind();
+        }
+    }
+
+    public abstract void execute();
+
+    /**
+     * Will load the given texture at the appropriate id.
+     * @param spritesheet
+     * @return true when this function has overriden an already existing texture
+     */
+    public boolean use(SpriteSheet spritesheet) {
+        boolean wasTextureUsed = textures[spritesheet.getTextureID()] != null;
+        textures[spritesheet.getTextureID()] = spritesheet;
+        return wasTextureUsed;
+    }
+
+    /**
+     * Will load the given shader.
+     * @param shader
+     * @return true when this function has overriden an already loaded shader
+     */
+    public boolean use(Shader shader) {
+        boolean wasShaderLoaded = this.shader != null;
+        this.shader = shader;
+        shader.compile();
+        return wasShaderLoaded;
+    }
+
+    public static boolean use(GameObject object) {
+        boolean wasObjectPresent = gameObjects.contains(object);
+        gameObjects.add(object);
+        return wasObjectPresent;
+    }
+
+    /**
+     * Does nothing but helps to have all of your load() lines the same
+     * @param sound
+     * @return true
+     */
+    public static boolean use(Sound sound) {
+        return true;
+    }
+
+    public static boolean remove(GameObject object) {
+        return gameObjects.remove(object);
+    }
+
+    public static ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+
+    public static <T> ArrayList<T> getGameObjects(Class<T> extend) {
+        ArrayList<T> gameObjects = new ArrayList<>();
+        for (GameObject object : Game.gameObjects) {
+            if (extend.isAssignableFrom(object.getClass())) {
+                gameObjects.add((T) object);
+            }
+        }
+
+        return gameObjects;
+    }
+
+    private void handleComponents() {
+        for (Pair<Class, Consumer> component : components) {
+            executeComponent(component);
+        }
+    }
+
+    private <T> void executeComponent(Pair<Class, Consumer> component) {
+        Class<T> type = (Class<T>) component.getFirst();
+        Consumer<T[]> consumer = (Consumer<T[]>) component.getSecond();
+
+        Object[] rawObjects = getGameObjects(type).toArray();
+
+        T[] typedArray = (T[]) Array.newInstance(type, rawObjects.length);
+        System.arraycopy(rawObjects, 0, typedArray, 0, rawObjects.length);
+
+        consumer.accept(typedArray);
+    }
+
+    /**
+     * This method is used to add component scripts to interfaces.
+     * @apiNote This process is not reversible at runtime.
+     * @param componentInterface - an interface
+     * @param consumer - the script to be run every frame on the selected objects
+     */
+    public final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
+        components.add(new Pair<>(componentInterface, consumer));
+    }
+
+    private void handleUpdatings(Updating... objects) {
+        for (Updating updating : objects) {
+            updating.update();
+        }
+    }
+
+    private void handleClickables(Clickable... objects) {
+        for (Clickable clickable : objects) {
+            if (!(clickable.contains(camera.screenToWorld(MouseListener.getMousePos())))) {
+                continue;
+            }
+
+            if (MouseListener.mouseButtonDown(MouseButton.LEFT)) {
+                clickable.clickEvent(MouseButton.LEFT);
+            }
+
+            if (MouseListener.mouseButtonDown(MouseButton.RIGHT)) {
+                clickable.clickEvent(MouseButton.RIGHT);
+            }
+
+        }
+    }
+
+    private UsesFocus focusedObject;
+    private void handleFocus(UsesFocus... objects) {
+        for (UsesFocus usesFocus : objects) {
+            if (usesFocus.shouldBeFocused() == true) {
+                focusedObject = usesFocus;
+            }
+
+            if (usesFocus.shouldNotBeFocused() == true && focusedObject != null && focusedObject.equals(usesFocus)) {
+                focusedObject = null;
+            }
+        }
+
+        if (focusedObject != null) {
+            focusedObject.isFocused();
+        }
+    }
+}

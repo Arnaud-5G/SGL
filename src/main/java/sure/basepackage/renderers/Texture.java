@@ -1,0 +1,19 @@
+package sure.basepackage.renderers;
+
+public class Texture {
+    protected int textureID;
+    protected float[][] uvcoords = new float[4][2];
+
+    public Texture(int textureID, float[][] uvcoords) {
+        this.textureID = textureID;
+        this.uvcoords = uvcoords;
+    }
+
+    public int getTextureID() {
+        return textureID;
+    }
+
+    public float[][] getUvcoords() {
+        return uvcoords;
+    }
+}

@@ -1,8 +1,8 @@
-import sure.Window;
+import sure.basepackage.Window;
 
 public class Main {
     public static void main(String[] args) {
         Window window = Window.get();
-        window.run(new MyGame());
+        window.run(new GolfGame());
     }
 }
