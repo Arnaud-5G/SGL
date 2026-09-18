@@ -6,6 +6,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
+
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.MouseListener;
 import sure.basepackage.utils.Time;
@@ -35,6 +36,10 @@ public class Window {
         title = "SGL Test";
     }
 
+    /**
+     * Singleton get for the window
+     * @return the window
+     */
     public static Window get() {
         if (window == null) {
             window = new Window();
@@ -75,6 +80,39 @@ public class Window {
         int[] height = new int[1];
         glfwGetFramebufferSize(glfwWindow, width, height);
         return height[0];
+    }
+
+    /**
+     * Resizes the window
+     * @param width
+     * @param height
+     */
+    public void resize(int width, int height) {
+        glfwSetWindowSize(glfwWindow, width, height);
+    }
+
+    /**
+     * @param value whether or not the window should be resizable
+     */
+    public void resizable(boolean value) {
+        glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, value ? GLFW_TRUE : GLFW_FALSE);
+    }
+
+    /**
+     * Attempts to move the window to the specified coordinates while not in fullscreen or maximized.
+     * @param x in screen pixels
+     * @param y in screen pixels
+     */
+    public void move(int x, int y) {
+        glfwSetWindowPos(glfwWindow, x, y);
+    }
+
+    /**
+     * Sets the title of the window
+     * @param title
+     */
+    public void setTitle(String title) {
+        glfwSetWindowTitle(glfwWindow, title);
     }
 
     public void run(Game game) {
