@@ -67,6 +67,7 @@ public class Window {
 
     /**
      * @return the window's intended height in pixels
+     * @apiNote this does not represent world coordinates
      */
     public int getHeight() {
         return height;
@@ -74,6 +75,7 @@ public class Window {
 
     /**
      * @return the window's actual height in pixels
+     * @apiNote this does not represent world coordinates
      */
     public int getActualHeight() {
         int[] width = new int[1];
@@ -133,7 +135,7 @@ public class Window {
 
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
