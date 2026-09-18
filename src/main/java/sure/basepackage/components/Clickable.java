@@ -1,4 +1,4 @@
-package sure.basepackage.standardcomponents;
+package sure.basepackage.components;
 
 import org.joml.Vector3f;
 import sure.basepackage.listeners.MouseListener;

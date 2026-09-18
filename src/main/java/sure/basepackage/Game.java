@@ -5,8 +5,8 @@ import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.objects.GameObject;
 import sure.basepackage.renderers.Sprites.SpriteSheet;
 import sure.basepackage.sound.Sound;
-import sure.basepackage.standardcomponents.Clickable;
-import sure.basepackage.standardcomponents.Updating;
+import sure.basepackage.components.Clickable;
+import sure.basepackage.components.Updating;
 import sure.basepackage.listeners.MouseListener;
 import static sure.basepackage.listeners.MouseListener.*;
 
@@ -14,8 +14,10 @@ import sure.basepackage.renderers.Shader;
 import sure.basepackage.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
-import sure.basepackage.standardcomponents.UsesFocus;
+import sure.basepackage.components.UsesFocus;
 import sure.basepackage.utils.Assets;
+import sure.basepackage.components.HandleComponents;
+import sure.basepackage.components.HandleStandardComponents;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ public abstract class Game {
     private Shader shader;
     private SpriteSheet[] textures = new SpriteSheet[16];
     private final int[] textureSamplers = new int[textures.length];
-    private static ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private ArrayList<Pair<Class, Consumer>> components = new ArrayList<>();
+    private ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private HandleComponents componentHandler = new HandleStandardComponents();
 
     final void init() {
         VertexRenderer.start();
@@ -37,9 +39,7 @@ public abstract class Game {
         this.use(Assets.getSpriteSheet("src/main/java/sure/basepackage/assets/default_font.png", 20, 20));
 
         // add standard components
-        addComponent(Clickable.class, this::handleClickables);
-        addComponent(Updating.class, this::handleUpdatings);
-        addComponent(UsesFocus.class, this::handleFocus);
+        componentHandler.initializeComponents();
 
         for (int i = 0; i < textureSamplers.length; i++) {
             textureSamplers[i] = i;
@@ -85,7 +85,7 @@ public abstract class Game {
         }
 
         // compute
-        handleComponents();
+        componentHandler.executeComponents(); // TODO: test putting execute before this line
         this.execute();
 
         // update Listeners
@@ -131,7 +131,7 @@ public abstract class Game {
         return wasShaderLoaded;
     }
 
-    public static boolean use(GameObject object) {
+    public boolean use(GameObject object) {
         boolean wasObjectPresent = gameObjects.contains(object);
         gameObjects.add(object);
         return wasObjectPresent;
@@ -142,21 +142,21 @@ public abstract class Game {
      * @param sound
      * @return true
      */
-    public static boolean use(Sound sound) {
+    public boolean use(Sound sound) {
         return true;
     }
 
-    public static boolean remove(GameObject object) {
+    public boolean remove(GameObject object) {
         return gameObjects.remove(object);
     }
 
-    public static ArrayList<GameObject> getGameObjects() {
+    public ArrayList<GameObject> getGameObjects() {
         return gameObjects;
     }
 
-    public static <T> ArrayList<T> getGameObjects(Class<T> extend) {
+    public <T> ArrayList<T> getGameObjects(Class<T> extend) {
         ArrayList<T> gameObjects = new ArrayList<>();
-        for (GameObject object : Game.gameObjects) {
+        for (GameObject object : this.gameObjects) {
             if (extend.isAssignableFrom(object.getClass())) {
                 gameObjects.add((T) object);
             }
@@ -165,71 +165,7 @@ public abstract class Game {
         return gameObjects;
     }
 
-    private void handleComponents() {
-        for (Pair<Class, Consumer> component : components) {
-            executeComponent(component);
-        }
-    }
-
-    private <T> void executeComponent(Pair<Class, Consumer> component) {
-        Class<T> type = (Class<T>) component.getFirst();
-        Consumer<T[]> consumer = (Consumer<T[]>) component.getSecond();
-
-        Object[] rawObjects = getGameObjects(type).toArray();
-
-        T[] typedArray = (T[]) Array.newInstance(type, rawObjects.length);
-        System.arraycopy(rawObjects, 0, typedArray, 0, rawObjects.length);
-
-        consumer.accept(typedArray);
-    }
-
-    /**
-     * This method is used to add component scripts to interfaces.
-     * @apiNote This process is not reversible at runtime.
-     * @param componentInterface - an interface
-     * @param consumer - the script to be run every frame on the selected objects
-     */
-    public final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
-        components.add(new Pair<>(componentInterface, consumer));
-    }
-
-    private void handleUpdatings(Updating... objects) {
-        for (Updating updating : objects) {
-            updating.update();
-        }
-    }
-
-    private void handleClickables(Clickable... objects) {
-        for (Clickable clickable : objects) {
-            if (!(clickable.contains(camera.screenToWorld(MouseListener.getMousePos())))) {
-                continue;
-            }
-
-            if (MouseListener.mouseButtonDown(MouseButton.LEFT)) {
-                clickable.clickEvent(MouseButton.LEFT);
-            }
-
-            if (MouseListener.mouseButtonDown(MouseButton.RIGHT)) {
-                clickable.clickEvent(MouseButton.RIGHT);
-            }
-
-        }
-    }
-
-    private UsesFocus focusedObject;
-    private void handleFocus(UsesFocus... objects) {
-        for (UsesFocus usesFocus : objects) {
-            if (usesFocus.shouldBeFocused() == true) {
-                focusedObject = usesFocus;
-            }
-
-            if (usesFocus.shouldNotBeFocused() == true && focusedObject != null && focusedObject.equals(usesFocus)) {
-                focusedObject = null;
-            }
-        }
-
-        if (focusedObject != null) {
-            focusedObject.isFocused();
-        }
+    public Camera getCamera() {
+        return camera;
     }
 }

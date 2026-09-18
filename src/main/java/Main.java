@@ -1,3 +1,4 @@
+import golfgame.GolfGame;
 import sure.basepackage.Window;
 
 public class Main {

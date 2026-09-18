@@ -3,7 +3,7 @@ package sure.basepackage.objects;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import sure.basepackage.renderers.Texture;
-import sure.basepackage.standardcomponents.Clickable;
+import sure.basepackage.components.Clickable;
 import sure.basepackage.listeners.MouseListener;
 import sure.basepackage.listeners.MouseListener.*;
 import sure.basepackage.utils.SureMath;

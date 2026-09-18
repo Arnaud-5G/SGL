@@ -1,13 +1,13 @@
 package sure.basepackage.objects;
 
-import sure.basepackage.Game;
+import sure.basepackage.Window;
 
 public class GameObject {
     public GameObject() {
-        Game.use(this);
+        Window.get().getRunningGame().use(this);
     }
 
     public void delete() {
-        Game.remove(this);
+        Window.get().getRunningGame().remove(this);
     }
 }

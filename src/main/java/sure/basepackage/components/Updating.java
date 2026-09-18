@@ -1,4 +1,4 @@
-package sure.basepackage.standardcomponents;
+package sure.basepackage.components;
 
 public interface Updating {
     public void update();

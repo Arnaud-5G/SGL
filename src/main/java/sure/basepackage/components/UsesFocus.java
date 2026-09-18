@@ -1,4 +1,4 @@
-package sure.basepackage.standardcomponents;
+package sure.basepackage.components;
 
 public interface UsesFocus {
     public boolean shouldBeFocused();

@@ -28,7 +28,7 @@ public class Window {
     private long audioContext;
     private long audioDevice;
 
-    private Game game;
+    Game game;
 
     private Window() {
         width = 1920;
@@ -46,6 +46,10 @@ public class Window {
         }
 
         return window;
+    }
+    
+    public Game getRunningGame() {
+        return game;
     }
 
     /**

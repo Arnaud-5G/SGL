@@ -11,6 +11,7 @@ import sure.basepackage.renderers.Animation;
 import sure.basepackage.renderers.Animator;
 import sure.basepackage.renderers.VertexRenderer;
 import sure.basepackage.utils.Assets;
+import sure.basepackage.utils.Color;
 import sure.basepackage.utils.Time;
 
 public class Test extends Game {
@@ -41,7 +42,7 @@ public class Test extends Game {
         sliderS.setValue(20);
         sliderR = new Slider(1100, 400, 30, 200, 0, 5);
         sliderR.setValue(0);
-        rectangle = new Rectangle(300, 300, 50, 100, 0, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get(1));
+        rectangle = new Rectangle(300, 300, 50, 100, 1, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get(1));
         textV = new TextField(0, 200, 0);
         textV.scale(3);
         textV.set("B\ta");
@@ -59,6 +60,6 @@ public class Test extends Game {
         Assets.getShader("src/main/java/sure/basepackage/shaders/default.glsl").uploadFloat("uTime", Time.getScaledTime());
         VertexRenderer.remove(rectangle);
         text.scale(sliderR.getValue());
-        rectangle = new Rectangle(300, 300, sliderS.getValue(), (int) sliderV.getValue(), 0, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get((int) sliderR.getValue()));
+        rectangle = new Rectangle(300, 300, sliderS.getValue(), (int) sliderV.getValue(), 1, Assets.getSpriteSheet("assets/Custom SpriteSheet.png", 16, 16).get((int) sliderR.getValue()));
     }
 }
