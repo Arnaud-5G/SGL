@@ -16,7 +16,6 @@ public abstract class HandleComponents {
     public void executeComponents() {
         handleComponents();
     }
-
     
     private void handleComponents() {
         for (Pair<Class, Consumer> component : components) {
@@ -45,5 +44,4 @@ public abstract class HandleComponents {
     public final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
         components.add(new Pair<>(componentInterface, consumer));
     }
-
 }

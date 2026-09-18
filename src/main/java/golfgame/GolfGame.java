@@ -16,11 +16,10 @@ import sure.basepackage.objects.Circle;
 import sure.basepackage.objects.Rectangle;
 import sure.basepackage.utils.Color;
 import sure.basepackage.utils.SureMath;
-import sure.basepackage.listeners.*;
 import sure.basepackage.utils.Time;
 
 public class GolfGame extends Game {
-    Circle golfBall;
+    GolfBall golfBall;
     Rectangle floor;
     int a = 0;
     Rectangle test;
@@ -30,7 +29,7 @@ public class GolfGame extends Game {
 
     @Override
     public void start() {
-        golfBall = new Circle(300, 50, 20, 20, 2, null);
+        golfBall = new GolfBall(300, 50, 20, 20, 2, null);
         golfBall.color = Color.RED;
         floor = new Rectangle(100, 50, 20, 500, 1, null);
         floor.color = Color.BLUE;
@@ -41,8 +40,6 @@ public class GolfGame extends Game {
 
     @Override
     public void execute() {
-        golfBall.y += (KeyListener.getKeyState(GLFW_KEY_UP) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_DOWN) == KeyState.DOWN ? 5 : 0);
-        golfBall.x += (KeyListener.getKeyState(GLFW_KEY_RIGHT) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_LEFT) == KeyState.DOWN ? 5 : 0);
         Vector3f pos = camera.screenToWorld(new Vector2f(((float) Window.get().getActualWidth())/2, ((float) Window.get().getActualHeight())/2));
         test.x = pos.x;
         test.y = pos.y;

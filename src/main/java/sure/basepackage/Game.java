@@ -1,27 +1,19 @@
 package sure.basepackage;
 
-import kotlin.Pair;
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.objects.GameObject;
 import sure.basepackage.renderers.Sprites.SpriteSheet;
 import sure.basepackage.sound.Sound;
-import sure.basepackage.components.Clickable;
-import sure.basepackage.components.Updating;
 import sure.basepackage.listeners.MouseListener;
-import static sure.basepackage.listeners.MouseListener.*;
 
 import sure.basepackage.renderers.Shader;
 import sure.basepackage.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
-import sure.basepackage.components.UsesFocus;
 import sure.basepackage.utils.Assets;
-import sure.basepackage.components.HandleComponents;
 import sure.basepackage.components.HandleStandardComponents;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -31,7 +23,7 @@ public abstract class Game {
     private SpriteSheet[] textures = new SpriteSheet[16];
     private final int[] textureSamplers = new int[textures.length];
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private HandleComponents componentHandler = new HandleStandardComponents();
+    private HandleStandardComponents componentHandler = new HandleStandardComponents();
 
     final void init() {
         VertexRenderer.start();
@@ -85,7 +77,7 @@ public abstract class Game {
         }
 
         // compute
-        componentHandler.executeComponents(); // TODO: test putting execute before this line
+        componentHandler.executeComponents();
         this.execute();
 
         // update Listeners
@@ -159,6 +151,7 @@ public abstract class Game {
         for (GameObject object : this.gameObjects) {
             if (extend.isAssignableFrom(object.getClass())) {
                 gameObjects.add((T) object);
+                System.out.println(object);
             }
         }
 
