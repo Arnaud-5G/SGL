@@ -4,7 +4,7 @@ import sure.basepackage.renderers.Texture;
 import sure.basepackage.renderers.VertexRenderer;
 import sure.basepackage.utils.Color;
 
-public abstract class GraphicsObject extends GameObject {
+public abstract class GraphicsObject extends GameObject implements Cloneable {
     public static final int NUMBER_OF_ATTRIBUTES = 10;
 
     // attributes

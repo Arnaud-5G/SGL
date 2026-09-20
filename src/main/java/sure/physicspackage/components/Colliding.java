@@ -1,7 +1,13 @@
 package sure.physicspackage.components;
 
-import sure.basepackage.objects.GraphicsObject;
+import org.joml.Vector2f;
 
 public interface Colliding {
-    public boolean isCollidingWith(GraphicsObject object);
+    /**
+     * @param object
+     * @return the normal of the collision from this to the object
+     */
+    public Vector2f getCollisionNormal(Colliding object);
+
+    public boolean contains(float[] point);
 }

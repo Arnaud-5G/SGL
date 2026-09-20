@@ -50,4 +50,8 @@ public class Camera {
         Vector3f pos = invMatrix.unproject(new Vector3f(screenPosition, 0), new int[] { 0, 0, Window.get().getActualWidth(), Window.get().getActualHeight()}, new Vector3f());
         return pos;
     }
+
+    public Vector2f worldToScreen(Vector3f worldPosition) {
+        return new Matrix4f(getProjectionMatrix()).mul(getViewMatrix()).transform(new Vector4f(worldPosition.x, worldPosition.y, 0, 0)).xy(new Vector2f());
+    }
 }
