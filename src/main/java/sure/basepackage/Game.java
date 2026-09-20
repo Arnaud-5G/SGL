@@ -11,10 +11,16 @@ import sure.basepackage.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
 import sure.basepackage.utils.Assets;
-import sure.basepackage.components.HandleStandardComponents;
+import sure.basepackage.components.HandleComponents;
+import sure.physicspackage.components.HandlePhysicsComponents;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.*;
 
 public abstract class Game {
@@ -23,9 +29,17 @@ public abstract class Game {
     private SpriteSheet[] textures = new SpriteSheet[16];
     private final int[] textureSamplers = new int[textures.length];
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private HandleStandardComponents componentHandler = new HandleStandardComponents();
+    private HandleComponents componentHandler = new HandlePhysicsComponents();
 
     final void init() {
+        // start logging
+        try {
+            File file = new File("logs.txt");
+            System.setOut(new PrintStream(file));
+        } catch (Exception e) {
+            System.out.println("Uh the log is not working!");
+        }
+
         VertexRenderer.start();
 
         this.use(Assets.getSpriteSheet("src/main/java/sure/basepackage/assets/default_font.png", 20, 20));
@@ -151,7 +165,6 @@ public abstract class Game {
         for (GameObject object : this.gameObjects) {
             if (extend.isAssignableFrom(object.getClass())) {
                 gameObjects.add((T) object);
-                System.out.println(object);
             }
         }
 
