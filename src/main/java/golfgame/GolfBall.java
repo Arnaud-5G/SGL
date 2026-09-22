@@ -12,14 +12,15 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import org.joml.Vector2f;
 
 import sure.basepackage.objects.Circle;
-import sure.basepackage.objects.GraphicsObject;
 import sure.basepackage.renderers.Texture;
 import sure.basepackage.utils.SureMath;
+import sure.basepackage.utils.Time;
 import sure.physicspackage.Gravity;
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.KeyListener.KeyState;
 
 public class GolfBall extends Circle implements UsesPhysics, Updating {
+    public float mass = 40;
     public GolfBall(float x, float y, float radius, int numOfVertices, float zIndex, Texture texture) {
         super(x, y, radius, numOfVertices, zIndex, texture);
     }
@@ -44,20 +45,20 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
 
     @Override
     public Vector2f calculateForces() {
-        return Gravity.getGravity();
+        return Gravity.getGravity().mul(mass);
     }
 
     @Override
     public void moveObject(Vector2f force) {
-        this.x += force.x;
+        this.x += force.x * Time.scaledDeltaTime();
         System.out.println("force x : " + force.x);
-        this.y += force.y;
+        this.y += force.y * Time.scaledDeltaTime();
         System.out.println("force y : " + force.y);
     }
 
     @Override
     public void update() {
-        this.y += (KeyListener.getKeyState(GLFW_KEY_UP) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_DOWN) == KeyState.DOWN ? 5 : 0);
-        this.x += (KeyListener.getKeyState(GLFW_KEY_RIGHT) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_LEFT) == KeyState.DOWN ? 5 : 0);
+        this.y += Time.getScaledTime() * (KeyListener.getKeyState(GLFW_KEY_UP) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_DOWN) == KeyState.DOWN ? 5 : 0);
+        this.x += Time.getScaledTime() * (KeyListener.getKeyState(GLFW_KEY_RIGHT) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_LEFT) == KeyState.DOWN ? 5 : 0);
     }
 }

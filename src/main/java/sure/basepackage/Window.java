@@ -154,7 +154,7 @@ public class Window {
         glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
         glfwMakeContextCurrent(glfwWindow);
-        glfwSwapInterval(1); // v-sync
+        // glfwSwapInterval(1); // v-sync
         glfwShowWindow(glfwWindow);
 
         // setup audio
