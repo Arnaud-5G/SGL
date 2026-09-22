@@ -3,7 +3,7 @@ package sure.physicspackage;
 import org.joml.Vector2f;
 
 public class Gravity {
-    public final static Vector2f DEFAULT_GRAVITY = new Vector2f(0f, -9.8f);
+    public final static Vector2f DEFAULT_GRAVITY = new Vector2f(0f, -9.8f / 3);
     protected static Vector2f gravity = DEFAULT_GRAVITY;
 
     public static void setGravity(Vector2f newGravity) {

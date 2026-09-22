@@ -100,9 +100,10 @@ public class SureMath {
             if (colliding.contains(point)) {
                 Vector2f subNormal;
 
+                // TODO: what if a segment does not intersect?
                 float[][] segment1 = new float[][] {objectGraphics.getPoses()[i-1 < 0 ? objectGraphics.getPoses().length-1 : i], point};
                 float[][] segment2 = new float[][] {point, objectGraphics.getPoses()[i+1 >= objectGraphics.getPoses().length ? 0 : i]};
-                
+
                 float[][] intersectionPoints = new float[2][2];
                 int m = 0;
 
@@ -117,8 +118,12 @@ public class SureMath {
                     }
                 }
 
-                float deltaX = intersectionPoints[0][0] - intersectionPoints[1][0];
-                float deltaY = intersectionPoints[0][1] - intersectionPoints[1][1];
+                float deltaX = 0;
+                float deltaY = 0;
+                if (intersectionPoints[0] != null && intersectionPoints[1] != null) {
+                    deltaX = intersectionPoints[0][0] - intersectionPoints[1][0];
+                    deltaY = intersectionPoints[0][1] - intersectionPoints[1][1];
+                }
                 
                 // take the perpendicular line to the segment
                 subNormal = SureMath.normalize(new Vector2f(deltaY, -deltaX));
