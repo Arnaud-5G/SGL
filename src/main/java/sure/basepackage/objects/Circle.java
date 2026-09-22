@@ -1,34 +1,22 @@
 package sure.basepackage.objects;
 
-import org.joml.Vector2f;
 import sure.basepackage.renderers.Texture;
 import sure.basepackage.utils.Color;
 
-public class Circle extends GraphicsObject {
-    public float x;
-    public float y;
+public class Circle extends RotatableObject {
     public float radius;
-    private float angle;
 
     public Circle(float x, float y, float radius, int numOfVertices, float zIndex, Texture texture) {
-        super(zIndex, texture, (numOfVertices + 1) <= 0 ? 1 : numOfVertices + 1, new Color(1, 1, 0, 1));
+        super(x, y, zIndex, texture, (numOfVertices + 1) <= 0 ? 1 : numOfVertices + 1, new Color(1, 1, 0, 1));
 
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.angle = 0;
     }
 
     @Override
     public int numberOfElements() {
         return numOfVertices;
-    }
-
-    /**
-     * @param angle in degrees
-     */
-    public void withAngle(float angle) {
-        this.angle = angle;
     }
 
     @Override
@@ -39,14 +27,10 @@ public class Circle extends GraphicsObject {
         double angle = (2 * Math.PI) / (numOfVertices - 1);
 
         for (int i = 1; i < poses.length; i++) {
-            poses[i] = getCirclePos(angle * (i - 1) + Math.toRadians(this.angle));
+            poses[i] = getPosAtAngle(angle * (i - 1) + Math.toRadians(this.angle), radius);
         }
 
         return poses;
-    }
-
-    protected float[] getCirclePos(double angle) {
-        return new float[] {(float)(Math.sin(angle) * radius) + x, (float)(Math.cos(angle) * radius) + y};
     }
 
     @Override

@@ -3,17 +3,13 @@ package sure.basepackage.objects;
 import sure.basepackage.renderers.Texture;
 import sure.basepackage.utils.Color;
 
-public class Rectangle extends GraphicsObject {
-    public float x;
-    public float y;
+public class Rectangle extends RotatableObject {
     public float width;
     public float height;
 
     public Rectangle(float x, float y, float height, float width, float zIndex, Texture texture) {
-        super(zIndex, texture, 4, new Color(1, 1, 0, 1));
+        super(x, y, zIndex, texture, 4, new Color(1, 1, 0, 1));
 
-        this.x = x;
-        this.y = y;
         this.width = width;
         this.height = height;
     }
@@ -25,11 +21,17 @@ public class Rectangle extends GraphicsObject {
 
     @Override
     public float[][] generatePoses() {
+        float radius = (float) Math.hypot(height/2, width/2);
+
         return new float[][] {
-                {x - width / 2, y - height / 2}, // bottom left 3
-                {x - width / 2, y + height / 2}, // top left 1
-                {x + width / 2, y + height / 2}, // top right 2
-                {x + width / 2, y - height / 2}, // bottom right 0
+                getPosAtAngle(Math.atan2(-width/2, -height/2) + Math.toRadians(angle), radius),
+                getPosAtAngle(Math.atan2(-width/2, height/2) + Math.toRadians(angle), radius),
+                getPosAtAngle(Math.atan2(width/2, height/2) + Math.toRadians(angle), radius),
+                getPosAtAngle(Math.atan2(width/2, -height/2) + Math.toRadians(angle), radius)
+                // {x - width / 2, y - height / 2}, // bottom left 3
+                // {x - width / 2, y + height / 2}, // top left 1
+                // {x + width / 2, y + height / 2}, // top right 2
+                // {x + width / 2, y - height / 2}, // bottom right 0
         };
     }
 
