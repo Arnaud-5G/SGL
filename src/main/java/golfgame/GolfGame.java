@@ -10,6 +10,7 @@ import sure.basepackage.Window;
 import sure.basepackage.components.Updating;
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.KeyListener.KeyState;
+import sure.basepackage.objects.Button;
 import sure.basepackage.objects.Circle;
 import sure.basepackage.objects.Rectangle;
 import sure.basepackage.objects.ui.FPS;
@@ -26,6 +27,7 @@ public class GolfGame extends Game {
     int a = 0;
     Rectangle cursor;
     Test test;
+    Button restartButton;
 
     @Override
     public void load() {}
@@ -40,13 +42,18 @@ public class GolfGame extends Game {
         floor1.withAngle(10);
         floor2 = new Floor(550, 10, 20, 10000, 1, null);
         floor2.color = Color.BLUE;
-        floor1 = new Floor(700, 50, 20, 700, 1, null);
-        floor1.color = Color.BLUE;
-        floor1.withAngle(-10);
+        floor3 = new Floor(700, 50, 20, 10000, 1, null);
+        floor3.color = Color.BLUE;
+        floor3.withAngle(-15);
         cursor = new Rectangle(0, 0, 10, 10, 0, null);
         cursor.color = Color.BLUE;
         test = new Test(290, 100, 20, 20, 2, null);
         test.color = Color.GREEN;
+        restartButton = new Button(500, 500, 40, 40, null, ()-> {
+            golfBall.delete();
+            golfBall = new GolfBall(300, 500, 20, 1000, 2, null);
+            golfBall.color = Color.RED;
+        });
     }
 
     @Override
@@ -59,6 +66,8 @@ public class GolfGame extends Game {
         if (KeyListener.getKeyState(GLFW_KEY_SPACE) == KeyState.DOWN) {
             Time.scale(1);
         }
+
+        System.out.println(golfBall.x);
     }
 
     public class LifeTime extends Circle implements Updating {

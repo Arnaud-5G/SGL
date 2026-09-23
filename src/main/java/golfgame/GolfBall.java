@@ -44,14 +44,7 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
 
     @Override
     public void moveObject(Vector2f force, Vector2f normal) {
-        this.speed.x += force.x * Time.scaledDeltaTime();
-        this.speed.y += force.y * Time.scaledDeltaTime();
-        if (normal.length() != 0) {
-            System.out.println("force x : " + force.x);
-            System.out.println("force y : " + force.y);
-        }
-
-        this.speed = SureMath.getSpeedAfterCollision(speed, normal);
+        speed = SureMath.calculateSpeed(force, speed, normal, 0.4f, 0.1f);
     }
 
     @Override

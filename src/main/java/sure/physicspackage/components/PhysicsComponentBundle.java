@@ -48,9 +48,6 @@ public class PhysicsComponentBundle extends ComponentBundle {
             }
 
             finalNormal.mul(forces.length());
-            if (finalNormal.length() != 0) {
-                System.out.println("final normal: " + finalNormal.toString());
-            }
             forces.add(finalNormal);
 
             physics.moveObject(forces, finalNormal);

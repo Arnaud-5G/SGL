@@ -231,18 +231,24 @@ public class SureMath {
         return vector.normalize();
     }
 
-    public static Vector2f getSpeedAfterCollision(float[] speed, Vector2f normal) {
-        return getSpeedAfterCollision(new Vector2f(speed[0], speed[1]), normal);
+    public static float getAngle(Vector2f vector) {
+        if (vector.length() == 0)
+            return Float.NaN;
+        return (float) Math.atan2(vector.y, vector.x);
+    }
+
+    public static Vector2f createAngledVector(float angle, float length) {
+        return new Vector2f((float) Math.cos(angle)*length, (float) Math.sin(angle)*length);
     }
     
     // TODO: add a way to get the amount of speed lost
-    public static Vector2f getSpeedAfterCollision(Vector2f speed, Vector2f normal) {
-        if (normal.length() == 0) {
+    public static Vector2f getSpeedAfterCollision(Vector2f speed, Vector2f normal, float bouncePercent) {
+        if (normal.length() == 0 || speed.length() == 0) {
             return new Vector2f(speed);
         }
 
-        float normalAngle = (float) Math.atan2(normal.y, normal.x);
-        float speedAngle = (float) Math.atan2(speed.y, speed.x);
+        float normalAngle = getAngle(normal);
+        float speedAngle = getAngle(speed);
         float deltaAngle = 0 - normalAngle;
 
         // turn the speed vector so that the normal is along an axis
@@ -252,7 +258,29 @@ public class SureMath {
             projectedSpeed.x = 0;
         }
 
-        float projectedAngle = (float) Math.atan2(projectedSpeed.y, projectedSpeed.x);
-        return new Vector2f((float) Math.cos(projectedAngle - deltaAngle)*projectedSpeed.length(), (float) Math.sin(projectedAngle - deltaAngle)*projectedSpeed.length());
+        float projectedAngle = getAngle(projectedSpeed);
+        Vector2f newSpeed = createAngledVector(projectedAngle - deltaAngle, projectedSpeed.length());
+        newSpeed.add(new Vector2f(normal).normalize().mul((speed.length() - newSpeed.length()) * bouncePercent));
+        
+        return newSpeed;
+    }
+
+    public static Vector2f applyFriction(Vector2f force, Vector2f speed, Vector2f normal, float frictionPercent) {
+        if (normal.length() == 0 || speed.length() == 0) {
+            return new Vector2f(force);
+        }
+        
+        float frictionMagnitude = normal.length() * frictionPercent;
+        Vector2f friction = createAngledVector(-getAngle(speed), -frictionMagnitude);
+        
+        return force.add(friction);
+    }
+
+    public static Vector2f calculateSpeed(Vector2f force, Vector2f originalSpeed, Vector2f normal, float bouncePercent, float frictionPercent) {
+        Vector2f speed = SureMath.getSpeedAfterCollision(originalSpeed, normal, bouncePercent);
+        force = SureMath.applyFriction(force, speed, normal, frictionPercent);
+        speed.x += force.x * Time.scaledDeltaTime();
+        speed.y += force.y * Time.scaledDeltaTime();
+        return speed;
     }
 }
