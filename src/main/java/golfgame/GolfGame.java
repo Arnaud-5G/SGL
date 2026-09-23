@@ -22,6 +22,7 @@ public class GolfGame extends Game {
     GolfBall golfBall;
     Floor floor1;
     Floor floor2;
+    Floor floor3;
     int a = 0;
     Rectangle cursor;
     Test test;
@@ -37,8 +38,11 @@ public class GolfGame extends Game {
         floor1 = new Floor(300, 50, 20, 500, 1, null);
         floor1.color = Color.BLUE;
         floor1.withAngle(10);
-        floor2 = new Floor(550, 10, 20, 100, 1, null);
+        floor2 = new Floor(550, 10, 20, 10000, 1, null);
         floor2.color = Color.BLUE;
+        floor1 = new Floor(700, 50, 20, 700, 1, null);
+        floor1.color = Color.BLUE;
+        floor1.withAngle(-10);
         cursor = new Rectangle(0, 0, 10, 10, 0, null);
         cursor.color = Color.BLUE;
         test = new Test(290, 100, 20, 20, 2, null);

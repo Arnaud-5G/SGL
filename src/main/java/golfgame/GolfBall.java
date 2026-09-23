@@ -21,6 +21,8 @@ import sure.basepackage.listeners.KeyListener.KeyState;
 
 public class GolfBall extends Circle implements UsesPhysics, Updating {
     public float mass = 40;
+    public Vector2f speed = new Vector2f();
+
     public GolfBall(float x, float y, float radius, int numOfVertices, float zIndex, Texture texture) {
         super(x, y, radius, numOfVertices, zIndex, texture);
     }
@@ -41,16 +43,20 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
     }
 
     @Override
-    public void moveObject(Vector2f force) {
-        this.x += force.x * Time.scaledDeltaTime();
-        System.out.println("force x : " + force.x);
-        this.y += force.y * Time.scaledDeltaTime();
-        System.out.println("force y : " + force.y);
+    public void moveObject(Vector2f force, Vector2f normal) {
+        this.speed.x += force.x * Time.scaledDeltaTime();
+        this.speed.y += force.y * Time.scaledDeltaTime();
+        if (normal.length() != 0) {
+            System.out.println("force x : " + force.x);
+            System.out.println("force y : " + force.y);
+        }
+
+        this.speed = SureMath.getSpeedAfterCollision(speed, normal);
     }
 
     @Override
     public void update() {
-        this.y += Time.getScaledTime() * (KeyListener.getKeyState(GLFW_KEY_UP) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_DOWN) == KeyState.DOWN ? 5 : 0);
-        this.x += Time.getScaledTime() * (KeyListener.getKeyState(GLFW_KEY_RIGHT) == KeyState.DOWN ? 5 : 0) - (KeyListener.getKeyState(GLFW_KEY_LEFT) == KeyState.DOWN ? 5 : 0);
+        this.y += speed.y * Time.scaledDeltaTime();
+        this.x += speed.x * Time.scaledDeltaTime();
     }
 }

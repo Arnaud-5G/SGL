@@ -48,10 +48,12 @@ public class PhysicsComponentBundle extends ComponentBundle {
             }
 
             finalNormal.mul(forces.length());
-            System.out.println("final normal: " + finalNormal.toString());
+            if (finalNormal.length() != 0) {
+                System.out.println("final normal: " + finalNormal.toString());
+            }
             forces.add(finalNormal);
 
-            physics.moveObject(forces);
+            physics.moveObject(forces, finalNormal);
         }
     }
 }

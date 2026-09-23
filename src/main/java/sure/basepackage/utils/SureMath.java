@@ -230,4 +230,29 @@ public class SureMath {
             return vector;
         return vector.normalize();
     }
+
+    public static Vector2f getSpeedAfterCollision(float[] speed, Vector2f normal) {
+        return getSpeedAfterCollision(new Vector2f(speed[0], speed[1]), normal);
+    }
+    
+    // TODO: add a way to get the amount of speed lost
+    public static Vector2f getSpeedAfterCollision(Vector2f speed, Vector2f normal) {
+        if (normal.length() == 0) {
+            return new Vector2f(speed);
+        }
+
+        float normalAngle = (float) Math.atan2(normal.y, normal.x);
+        float speedAngle = (float) Math.atan2(speed.y, speed.x);
+        float deltaAngle = 0 - normalAngle;
+
+        // turn the speed vector so that the normal is along an axis
+        Vector2f projectedSpeed = new Vector2f((float) Math.cos(speedAngle + deltaAngle)*speed.length(), (float) Math.sin(speedAngle + deltaAngle)*speed.length());
+
+        if (projectedSpeed.x < 0) {
+            projectedSpeed.x = 0;
+        }
+
+        float projectedAngle = (float) Math.atan2(projectedSpeed.y, projectedSpeed.x);
+        return new Vector2f((float) Math.cos(projectedAngle - deltaAngle)*projectedSpeed.length(), (float) Math.sin(projectedAngle - deltaAngle)*projectedSpeed.length());
+    }
 }
