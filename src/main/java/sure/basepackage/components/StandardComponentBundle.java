@@ -5,11 +5,10 @@ import sure.basepackage.listeners.MouseListener.MouseButton;
 import sure.basepackage.Window;
 
 public class StandardComponentBundle extends ComponentBundle {
-    static {
-        StandardComponentBundle.add(Updating.class, StandardComponentBundle::handleUpdatings);
-        StandardComponentBundle.add(Clickable.class, StandardComponentBundle::handleClickables);
-        StandardComponentBundle.add(UsesFocus.class, StandardComponentBundle::handleFocus);
-
+    public StandardComponentBundle() {
+        this.add(Updating.class, StandardComponentBundle::handleUpdatings);
+        this.add(Clickable.class, StandardComponentBundle::handleClickables);
+        this.add(UsesFocus.class, StandardComponentBundle::handleFocus);
     }
 
     private static void handleUpdatings(Updating... objects) {

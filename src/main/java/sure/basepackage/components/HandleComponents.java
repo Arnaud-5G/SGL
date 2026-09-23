@@ -44,6 +44,8 @@ public class HandleComponents {
     }
 
     public final void addComponent(ComponentBundle bundle) {
-        components.addAll(bundle.getComponents());
+        for (Pair<Class, Consumer> component : bundle.getComponents()) {
+            components.add(component);
+        }
     }
 }

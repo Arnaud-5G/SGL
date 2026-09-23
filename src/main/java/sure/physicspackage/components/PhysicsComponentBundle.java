@@ -7,9 +7,9 @@ import sure.basepackage.objects.GraphicsObject;
 import sure.basepackage.*;
 
 public class PhysicsComponentBundle extends ComponentBundle {
-    static {
-        PhysicsComponentBundle.add(Colliding.class, PhysicsComponentBundle::handleColliding);
-        PhysicsComponentBundle.add(UsesPhysics.class, PhysicsComponentBundle::handleUsesPhysics);
+    public PhysicsComponentBundle() {
+        this.add(Colliding.class, PhysicsComponentBundle::handleColliding);
+        this.add(UsesPhysics.class, PhysicsComponentBundle::handleUsesPhysics);
     }
     
     public static void handleColliding(Colliding... objects) {

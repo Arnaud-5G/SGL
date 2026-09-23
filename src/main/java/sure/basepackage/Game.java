@@ -46,8 +46,8 @@ public abstract class Game {
         this.use(Assets.getSpriteSheet("src/main/java/sure/basepackage/assets/default_font.png", 20, 20));
 
         // add standard components
-        componentHandler.addComponent(StandardComponentBundle.getBundle());
-        componentHandler.addComponent(PhysicsComponentBundle.getBundle());
+        componentHandler.addComponent(new StandardComponentBundle());
+        componentHandler.addComponent(new PhysicsComponentBundle());
 
         for (int i = 0; i < textureSamplers.length; i++) {
             textureSamplers[i] = i;
