@@ -13,6 +13,7 @@ public class Test extends Circle implements Colliding {
         super(x, y, radius, numOfVertices, zIndex, texture);
     }
 
+    // TODO: investigate why this does not work with the SureMath logic
     @Override
     public Vector2f getCollisionNormal(Colliding object) {
         Vector2f normal = new Vector2f();

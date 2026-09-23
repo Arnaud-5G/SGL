@@ -31,7 +31,7 @@ public class Slider extends GameObject {
 
         @Override
         public boolean contains(Vector3f pos) {
-            return SureMath.contains(new Vector2f(pos), this);
+            return SureMath.ConvexPolygon.contains(new Vector2f(pos), this);
         }
 
         @Override

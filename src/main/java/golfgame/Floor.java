@@ -16,11 +16,11 @@ public class Floor extends Rectangle implements Colliding {
 
     @Override
     public Vector2f getCollisionNormal(Colliding object) {
-        return SureMath.getCollisionNormal(this, new float[] {x, y}, object);
+        return SureMath.ConvexPolygon.getCollisionNormal(this, new float[] {x, y}, object);
     }
 
     @Override
     public boolean contains(float[] point) {
-        return SureMath.contains(point, this);
+        return SureMath.ConvexPolygon.contains(point, this);
     }
 }

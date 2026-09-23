@@ -17,7 +17,7 @@ public class Button extends Rectangle implements Clickable {
 
     @Override
     public boolean contains(Vector3f pos) {
-        return SureMath.contains(new Vector2f(pos), this);
+        return SureMath.ConvexPolygon.contains(new Vector2f(pos), this);
     }
 
     @Override

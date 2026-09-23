@@ -27,20 +27,12 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
 
     @Override
     public boolean contains(float[] point) {
-        return Math.hypot(point[0]-x, point[1]-y) <= radius;
+        return SureMath.Circle.contains(point, new float[] {x, y}, radius);
     }
 
     @Override
     public Vector2f getCollisionNormal(Colliding object) {
-        Vector2f normal = new Vector2f();
-        for (float[] point : this.getPoses()) {
-            if (object.contains(point)) {
-                Vector2f subNormal = new Vector2f(x - point[0], y - point[1]);
-                normal.add(subNormal);
-            }
-        }
-
-        return SureMath.normalize(normal);
+        return SureMath.Circle.getCollisionNormal(this, new float[] {x, y}, object);
     }
 
     @Override
