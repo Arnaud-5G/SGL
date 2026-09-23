@@ -8,10 +8,8 @@ import kotlin.Pair;
 
 import sure.basepackage.Window;
 
-public abstract class HandleComponents {
+public class HandleComponents {
     private ArrayList<Pair<Class, Consumer>> components = new ArrayList<>();
-
-    public abstract void initializeComponents();
 
     public void executeComponents() {
         handleComponents();
@@ -43,5 +41,9 @@ public abstract class HandleComponents {
      */
     public final <T> void addComponent(Class<T> componentInterface, Consumer<T[]> consumer) {
         components.add(new Pair<>(componentInterface, consumer));
+    }
+
+    public final void addComponent(ComponentBundle bundle) {
+        components.addAll(bundle.getComponents());
     }
 }

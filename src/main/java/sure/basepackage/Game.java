@@ -12,7 +12,8 @@ import sure.basepackage.renderers.VertexRenderer;
 import org.joml.Vector2f;
 import sure.basepackage.utils.Assets;
 import sure.basepackage.components.HandleComponents;
-import sure.physicspackage.components.HandlePhysicsComponents;
+import sure.basepackage.components.StandardComponentBundle;
+import sure.physicspackage.components.PhysicsComponentBundle;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +30,7 @@ public abstract class Game {
     private SpriteSheet[] textures = new SpriteSheet[16];
     private final int[] textureSamplers = new int[textures.length];
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private HandleComponents componentHandler = new HandlePhysicsComponents();
+    private HandleComponents componentHandler = new HandleComponents();
 
     final void init() {
         // start logging
@@ -45,7 +46,8 @@ public abstract class Game {
         this.use(Assets.getSpriteSheet("src/main/java/sure/basepackage/assets/default_font.png", 20, 20));
 
         // add standard components
-        componentHandler.initializeComponents();
+        componentHandler.addComponent(StandardComponentBundle.getBundle());
+        componentHandler.addComponent(PhysicsComponentBundle.getBundle());
 
         for (int i = 0; i < textureSamplers.length; i++) {
             textureSamplers[i] = i;

@@ -2,19 +2,17 @@ package sure.physicspackage.components;
 
 import org.joml.Vector2f;
 
-import sure.basepackage.components.HandleStandardComponents;
+import sure.basepackage.components.ComponentBundle;
 import sure.basepackage.objects.GraphicsObject;
 import sure.basepackage.*;
 
-public class HandlePhysicsComponents extends HandleStandardComponents {
-    @Override
-    public void initializeComponents() {
-        super.initializeComponents();
-        addComponent(Colliding.class, this::handleColliding);
-        addComponent(UsesPhysics.class, this::handleUsesPhysics);
+public class PhysicsComponentBundle extends ComponentBundle {
+    static {
+        PhysicsComponentBundle.add(Colliding.class, PhysicsComponentBundle::handleColliding);
+        PhysicsComponentBundle.add(UsesPhysics.class, PhysicsComponentBundle::handleUsesPhysics);
     }
     
-    public void handleColliding(Colliding... objects) {
+    public static void handleColliding(Colliding... objects) {
         for (Colliding colliding : objects) {
             if (colliding instanceof UsesPhysics || !(colliding instanceof GraphicsObject)) {
                 continue;
@@ -22,7 +20,7 @@ public class HandlePhysicsComponents extends HandleStandardComponents {
         }
     }
 
-    public void handleUsesPhysics(UsesPhysics... objects) {
+    public static void handleUsesPhysics(UsesPhysics... objects) {
         for (UsesPhysics physics : objects) {
             if (!(physics instanceof GraphicsObject)) {
                 continue;

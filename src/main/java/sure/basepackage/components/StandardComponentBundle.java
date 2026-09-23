@@ -4,21 +4,21 @@ import sure.basepackage.listeners.*;
 import sure.basepackage.listeners.MouseListener.MouseButton;
 import sure.basepackage.Window;
 
-public class HandleStandardComponents extends HandleComponents {
-    @Override 
-    public void initializeComponents() {
-        addComponent(Clickable.class, this::handleClickables);
-        addComponent(Updating.class, this::handleUpdatings);
-        addComponent(UsesFocus.class, this::handleFocus);
+public class StandardComponentBundle extends ComponentBundle {
+    static {
+        StandardComponentBundle.add(Updating.class, StandardComponentBundle::handleUpdatings);
+        StandardComponentBundle.add(Clickable.class, StandardComponentBundle::handleClickables);
+        StandardComponentBundle.add(UsesFocus.class, StandardComponentBundle::handleFocus);
+
     }
 
-    private void handleUpdatings(Updating... objects) {
+    private static void handleUpdatings(Updating... objects) {
         for (Updating updating : objects) {
             updating.update();
         }
     }
 
-    private void handleClickables(Clickable... objects) {
+    private static void handleClickables(Clickable... objects) {
         if (!MouseListener.mouseButtonDown(MouseButton.LEFT) && !MouseListener.mouseButtonDown(MouseButton.RIGHT)) {
             return;
         }
@@ -38,8 +38,8 @@ public class HandleStandardComponents extends HandleComponents {
         }
     }
 
-    private UsesFocus focusedObject;
-    private void handleFocus(UsesFocus... objects) {
+    private static UsesFocus focusedObject;
+    private static void handleFocus(UsesFocus... objects) {
         for (UsesFocus usesFocus : objects) {
             if (usesFocus.shouldBeFocused() == true) {
                 focusedObject = usesFocus;
