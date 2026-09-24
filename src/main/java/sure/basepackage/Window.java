@@ -32,7 +32,7 @@ public class Window {
 
     private Window() {
         width = 1920;
-        height = 1080;
+        height = 1046; // when fullscreen is 1080
         title = "SGL Test";
     }
 

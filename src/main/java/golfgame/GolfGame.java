@@ -1,5 +1,6 @@
 package golfgame;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 
 import org.joml.Vector2f;
@@ -10,10 +11,12 @@ import sure.basepackage.Window;
 import sure.basepackage.components.Updating;
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.KeyListener.KeyState;
+import sure.basepackage.listeners.MouseListener;
 import sure.basepackage.objects.Button;
 import sure.basepackage.objects.Circle;
 import sure.basepackage.objects.Rectangle;
 import sure.basepackage.objects.ui.FPS;
+import sure.basepackage.objects.ui.TextBox;
 import sure.basepackage.utils.Color;
 import sure.basepackage.utils.SureMath;
 import sure.basepackage.utils.Time;
@@ -28,12 +31,14 @@ public class GolfGame extends Game {
     Rectangle cursor;
     Test test;
     Button restartButton;
+    TextBox coords;
 
     @Override
     public void load() {}
 
     @Override
     public void start() {
+        coords = new TextBox(800, 500, 5);
         fpsCounter = new FPS(10);
         golfBall = new GolfBall(300, 500, 20, 1000, 2, null);
         golfBall.color = Color.RED;
@@ -67,7 +72,18 @@ public class GolfGame extends Game {
             Time.scale(1);
         }
 
-        System.out.println(golfBall.x);
+        int x = (int) MouseListener.getMousePos().x;
+        int y = (int) MouseListener.getMousePos().y;
+
+        coords.set("(" + x + ", " + y + ")\n" + 
+        "(" + Window.get().getActualWidth() + ", " + Window.get().getActualHeight() + ")\n" + 
+        "(" + x/(float)Window.get().getActualWidth() + ", " + y/(float)Window.get().getActualHeight() + ")");
+
+        if (KeyListener.getKeyState(GLFW_KEY_LEFT_SHIFT) == KeyState.DOWN) {
+            Vector3f mPos = camera.screenToWorld(MouseListener.getMousePos());
+            test.x = mPos.x;
+            test.y = mPos.y;
+        }
     }
 
     public class LifeTime extends Circle implements Updating {

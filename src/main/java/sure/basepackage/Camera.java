@@ -3,7 +3,6 @@ package sure.basepackage;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 public class Camera {
     private Matrix4f projectionMatrix, viewMatrix;
@@ -45,13 +44,9 @@ public class Camera {
     }
 
     public Vector3f screenToWorld(Vector2f screenPosition) {
-        screenPosition.y = (Window.get().getActualHeight()) - screenPosition.y;
-        Matrix4f invMatrix = new Matrix4f(getProjectionMatrix()).mul(viewMatrix);
-        Vector3f pos = invMatrix.unproject(new Vector3f(screenPosition, 0), new int[] { 0, 0, Window.get().getActualWidth(), Window.get().getActualHeight()}, new Vector3f());
+        screenPosition.y = Window.get().getActualHeight() - screenPosition.y;
+        Matrix4f matrix = new Matrix4f(getProjectionMatrix()).mul(getViewMatrix());
+        Vector3f pos = matrix.unproject(new Vector3f(screenPosition, 0), new int[] { 0, 0, Window.get().getWidth(), Window.get().getHeight()}, new Vector3f());
         return pos;
-    }
-
-    public Vector2f worldToScreen(Vector3f worldPosition) {
-        return new Matrix4f(getProjectionMatrix()).mul(getViewMatrix()).transform(new Vector4f(worldPosition.x, worldPosition.y, 0, 0)).xy(new Vector2f());
     }
 }
