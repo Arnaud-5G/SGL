@@ -27,6 +27,9 @@ public class Camera {
         adjustProjection();
     }
 
+    /**
+     * Resets and setups the projection Matrix
+     */
     public void adjustProjection() {
         projectionMatrix.identity();
         projectionMatrix.ortho(0f, 32f * 40f, 0f, 32f * 21f, -80f, 21f); // z-index [0, 100]
@@ -48,6 +51,7 @@ public class Camera {
     }
 
     /**
+     * Will transfer normalized window coordinates to world space coordinates using the active camera
      * @param screenPositionX 0-1
      * @param screenPositionY 0-1
      * @return

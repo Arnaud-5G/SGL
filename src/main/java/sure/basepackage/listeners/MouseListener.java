@@ -1,28 +1,15 @@
 package sure.basepackage.listeners;
-
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
-import sure.basepackage.camera.Camera;
-import sure.basepackage.Window;
 import sure.basepackage.camera.Coordinates.Screen;
-import sure.basepackage.camera.Coordinates.World;
-
-import java.util.Optional;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 public class MouseListener {
-    private static MouseListener instance;
+    private static double scrollX, scrollY;
+    private static double posX, lastX, posY, lastY;
 
-    private double scrollX, scrollY;
-    private double posX, lastX, posY, lastY;
-
-    private final boolean[] mouseButtonPressed = new boolean[3];
-    private boolean isDragging;
-
-    private Camera currentGameCamera;
+    private static final boolean[] mouseButtonPressed = new boolean[3];
+    private static boolean isDragging;
 
     public enum MouseButton {
         LEFT(0),
@@ -40,7 +27,8 @@ public class MouseListener {
         }
     }
 
-    private MouseListener() {
+    static {
+        // initializes the MouseListener
         scrollX = 0;
         scrollY = 0;
         posX = 0;
@@ -51,85 +39,92 @@ public class MouseListener {
         isDragging = false;
     }
 
-    public static MouseListener get() {
-        if (instance == null) {
-            instance = new MouseListener();
-        }
-
-        return instance;
+    public static void updateListener() {
+        lastX = posX;
+        lastY = posY;
     }
 
     public static void mousePosCallback(long window, double xPos, double yPos) {
-        get().lastX = get().posX;
-        get().lastY = get().posY;
-        get().posX = xPos;
-        get().posY = yPos;
-        get().isDragging = get().mouseButtonPressed[0] ||
-                           get().mouseButtonPressed[1] ||
-                           get().mouseButtonPressed[2];
+        lastX = posX;
+        lastY = posY;
+        posX = xPos;
+        posY = yPos;
+        isDragging = mouseButtonPressed[0] ||
+                           mouseButtonPressed[1] ||
+                           mouseButtonPressed[2];
     }
 
     public static void mouseButtonCallback(long window, int button, int action, int mods) {
-        if (button >= get().mouseButtonPressed.length) {
+        if (button >= mouseButtonPressed.length) {
             return;
         }
 
         if(action == GLFW_PRESS) {
-            get().mouseButtonPressed[button] = true;
+            mouseButtonPressed[button] = true;
         } else if (action == GLFW_RELEASE) {
-            get().mouseButtonPressed[button] = false;
-            get().isDragging = false;
+            mouseButtonPressed[button] = false;
+            isDragging = false;
         }
     }
 
     public static void mouseScrollCallback(long window, double xOffset, double yOffset) {
-        get().scrollX = xOffset;
-        get().scrollY = yOffset;
+        scrollX = xOffset;
+        scrollY = yOffset;
     }
 
-    public static void attachCamera(Camera camera) {
-        MouseListener.get().currentGameCamera = camera;
-    }
-
+    /**
+     * @return the mouse position in screen space
+     */
     public static Screen getMousePos() {
-        return Screen.fromWindowSpace((float) get().posX, (float) get().posY);
+        return Screen.fromWindowSpace((float) posX, (float) posY);
     }
 
     public static float getX() {
-        return (float)get().posX;
+        return (float) posX;
     }
 
     public static float getY() {
-        return (float)get().posY;
+        return (float) posY;
     }
 
     public static float getDx() {
-        return (float)(get().lastX - get().posX);
+        return (float)(lastX - posX);
     }
 
     public static float getDy() {
-        return (float)(get().lastY - get().posY);
+        return (float)(lastY - posY);
     }
 
     public static float getScrollX() {
-        return (float)get().scrollX;
+        return (float) scrollX;
     }
 
     public static float getScrollY() {
-        return (float)get().scrollY;
+        return (float) scrollY;
     }
 
     public static boolean isDragging() {
-        return get().isDragging;
+        return isDragging;
     }
 
+    /**
+     * Checks if the specified {@link MouseButton} is down
+     * @param button
+     * @return boolean
+     */
     public static boolean mouseButtonDown(MouseButton button) {
         return mouseButtonDown(button.getIndex());
     }
 
+    /**
+     * Checks if the mouse button at the specified index is down
+     * @param button
+     * @return boolean
+     * @throws ArrayIndexOutOfBoundsException if the index is unsupported
+     */
     public static boolean mouseButtonDown(int button) {
-        if(button > get().mouseButtonPressed.length - 1)
+        if(button > mouseButtonPressed.length - 1)
             throw new ArrayIndexOutOfBoundsException("button: " + button + " is not supported by this library");
-        return get().mouseButtonPressed[button];
+        return mouseButtonPressed[button];
     }
 }

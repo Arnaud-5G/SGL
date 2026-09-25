@@ -8,6 +8,9 @@ import sure.basepackage.utils.Assets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TextBox is an object that will display some text without allowing the game user to modify it
+ */
 public class TextBox extends GameObject {
     public final float HEIGHT = 20;
     public final float WIDTH = 20;

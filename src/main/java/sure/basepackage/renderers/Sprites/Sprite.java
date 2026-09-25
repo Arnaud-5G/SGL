@@ -7,6 +7,9 @@ public class Sprite extends SpriteSheet {
         super(filepath, -1, -1);
     }
 
+    /**
+     * @return the Texture
+     */
     public Texture get() {
         return textures[0];
     }

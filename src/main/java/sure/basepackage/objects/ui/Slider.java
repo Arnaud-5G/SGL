@@ -1,7 +1,5 @@
 package sure.basepackage.objects.ui;
 
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import sure.basepackage.objects.GameObject;
 import sure.basepackage.renderers.Texture;
 import sure.basepackage.camera.Coordinates.Screen;
@@ -20,7 +18,7 @@ public class Slider extends GameObject {
     private final float min;
     private final float max;
 
-    public static class Thumb extends Circle implements Clickable, Updating {
+    protected static class Thumb extends Circle implements Clickable, Updating {
         final float minx;
         final float length;
         boolean isDragging = false;

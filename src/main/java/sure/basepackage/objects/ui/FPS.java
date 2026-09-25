@@ -4,6 +4,9 @@ import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.components.Updating;
 import sure.basepackage.utils.Time;
 
+/**
+ * {@link FPS} is an object that will show your games FPS and ms per frame in the top left corner of your screen
+ */
 public class FPS extends TextBox implements Updating {
     float timer = 0.1f;
 
@@ -18,5 +21,7 @@ public class FPS extends TextBox implements Updating {
             this.set((int) Time.FPS() + " FPS\n" + Time.deltaTime()*1000 + " ms");
             timer = 0;
         }
+        x = Screen.coords(-0.9f, 0.8f).toWorld().x;
+        y = Screen.coords(-0.9f, 0.8f).toWorld().y;
     }
 }

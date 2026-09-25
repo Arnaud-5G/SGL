@@ -7,6 +7,9 @@ public class GameObject {
         Window.get().getRunningGame().use(this);
     }
 
+    /**
+     * Deletes the object from the game
+     */
     public void delete() {
         Window.get().getRunningGame().remove(this);
     }

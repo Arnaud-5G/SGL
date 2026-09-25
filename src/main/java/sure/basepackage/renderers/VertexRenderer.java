@@ -2,7 +2,6 @@ package sure.basepackage.renderers;
 
 import org.lwjgl.BufferUtils;
 
-import sure.basepackage.Game;
 import sure.basepackage.objects.GraphicsObject;
 
 import java.nio.FloatBuffer;
@@ -128,6 +127,11 @@ public class VertexRenderer {
         return objects;
     }
 
+    /**
+     * @param <T>
+     * @param extend
+     * @return all GraphicsObjects that extend {@code extend}
+     */
     public static <T> ArrayList<T> getGraphicsObjects(Class<T> extend) {
         ArrayList<T> graphicsObjects = new ArrayList<>();
         for (GraphicsObject object : objects) {

@@ -1,7 +1,5 @@
 package sure.basepackage.objects;
 
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import sure.basepackage.renderers.Texture;
 import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.components.Clickable;

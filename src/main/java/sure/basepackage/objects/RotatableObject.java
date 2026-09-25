@@ -24,6 +24,12 @@ public abstract class RotatableObject extends GraphicsObject {
         this.angle = angle;
     }
 
+    /**
+     * Calculates the position of a point at a certain angle along a centered circle with a specified radius
+     * @param angle
+     * @param radius
+     * @return
+     */
     protected float[] getPosAtAngle(double angle, float radius) {
         return new float[] {(float)(Math.sin(angle) * radius) + x, (float)(Math.cos(angle) * radius) + y};
     }

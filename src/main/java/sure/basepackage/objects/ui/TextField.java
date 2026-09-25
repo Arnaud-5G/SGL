@@ -1,9 +1,6 @@
 package sure.basepackage.objects.ui;
 
-import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
-
-import java.util.ArrayList;
 
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.MouseListener;
@@ -17,6 +14,9 @@ import sure.basepackage.utils.Assets;
 import sure.basepackage.utils.Color;
 import sure.basepackage.utils.Time;
 
+/**
+ * TextField is an object that will display some text while allowing the game user to modify it
+ */
 public class TextField extends TextBox implements Clickable, UsesFocus {
     protected static final float CHAR_TO_CURSOR_WIDTH = 1f/10f;
     protected static final float MAX_TIME_BACKSPACE = 1f;
@@ -41,6 +41,10 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
         cursor.width = getWidth()*CHAR_TO_CURSOR_WIDTH;
     }
 
+    /**
+     * Moves the cursor to the specified index clamped to the bounds of the TextField
+     * @param index
+     */
     public void moveCursor(int index) {
         cursorIndex = Math.clamp(index, 0, characters.size());
 

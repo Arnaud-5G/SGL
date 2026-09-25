@@ -8,15 +8,26 @@ public abstract class Coordinates {
     public float x;
     public float y;
 
+    /**
+     * @return a Vector representation of this object
+     */
     public Vector2f toVector() {
         return new Vector2f(x, y);
     }
 
+    /**
+     * @return the world space equivalent to this object
+     */
     public abstract World toWorld();
+    /**
+     * @return the screen space equivalent to this object
+     */
     public abstract Screen toScreen();
 
     /**
      * Screen space coordinates from -1 to 1 in both axes.
+     * x is left to right
+     * y is bottom to top
      */
     public static class Screen extends Coordinates {
         public Screen() {
@@ -40,10 +51,22 @@ public abstract class Coordinates {
             return new Screen(x, y);
         }
 
+        /**
+         * @return the screen space origin {@code (0, 0)} aka the center of the screen
+         */
         public static Screen origin() {
             return new Screen();
         }
 
+        /**
+         * Converts window space coordinates to screen space
+         * Window space is 0-Window.getHeight() in y and 0-Window.getWidth() in x
+         * x is left to right
+         * y is top to bottom
+         * @param x
+         * @param y
+         * @return screen space coords
+         */
         public static Screen fromWindowSpace(float x, float y) {
             return new Screen(x / Window.get().getActualWidth()*2 - 1, (y / Window.get().getActualHeight()*2 - 1)*-1);
         }
@@ -86,6 +109,9 @@ public abstract class Coordinates {
             return new World(x, y);
         }
 
+        /**
+         * @return the world space origin {@code (0, 0)} aka the bottom left of the screen if the camera hasn't moved
+         */
         public static World origin() {
             return new World();
         }

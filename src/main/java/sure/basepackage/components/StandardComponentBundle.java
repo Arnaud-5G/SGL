@@ -40,7 +40,7 @@ public class StandardComponentBundle extends ComponentBundle {
     private static UsesFocus focusedObject;
     private static void handleFocus(UsesFocus... objects) {
         for (UsesFocus usesFocus : objects) {
-            if (usesFocus.shouldBeFocused() == true) {
+            if (usesFocus.shouldBeFocused() == true && usesFocus.shouldNotBeFocused() == false) {
                 focusedObject = usesFocus;
             }
 

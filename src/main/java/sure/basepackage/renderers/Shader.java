@@ -51,6 +51,9 @@ public class Shader {
         }
     }
 
+    /**
+     * This function should only be called by internal game logic
+     */
     public void compile() {
         int vertexID,  fragmentID;
 
@@ -110,6 +113,11 @@ public class Shader {
         inUse = false;
     }
 
+    /**
+     * Uploads a {@code Matrix4f} that will be accessible inside the shader by using the {@code uniform} keyword
+     * @param varName
+     * @param mat4
+     */
     public void uploadMath4f(String varName, Matrix4f mat4) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
@@ -118,6 +126,11 @@ public class Shader {
         glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 
+    /**
+     * Uploads a {@code Matrix4f} that will be accessible inside the shader
+     * @param varName
+     * @param mat3
+     */
     public void uploadMath3f(String varName, Matrix3f mat3) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
@@ -126,45 +139,78 @@ public class Shader {
         glUniformMatrix3fv(varLocation, false, matBuffer);
     }
 
+    /**
+     * Uploads a {@code Vector4f} that will be accessible inside the shader
+     * @param varName
+     * @param vec4f
+     */
     public void uploadVec4f(String varName, Vector4f vec4f) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
         glUniform4f(varLocation, vec4f.x, vec4f.y, vec4f.z, vec4f.w);
     }
 
+    /**
+     * Uploads a {@code Vector3f} that will be accessible inside the shader
+     * @param varName
+     * @param vec3f
+     */
     public void uploadVec3f(String varName, Vector3f vec3f) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
         glUniform3f(varLocation, vec3f.x, vec3f.y, vec3f.z);
     }
 
+    /**
+     * Uploads a {@code Vector2f} that will be accessible inside the shader
+     * @param varName
+     * @param vec2f
+     */
     public void uploadVec2f(String varName, Vector2f vec2f) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
         glUniform2f(varLocation, vec2f.x, vec2f.y);
     }
 
+    /**
+     * Uploads a {@code float} that will be accessible inside the shader
+     * @param varName
+     * @param val
+     */
     public void uploadFloat(String varName, float val) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
         glUniform1f(varLocation, val);
     }
 
+    /**
+     * Uploads an {@code int} that will be accessible inside the shader
+     * @param varName
+     * @param val
+     */
     public void uploadInt(String varName, int val) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
         glUniform1i(varLocation, val);
     }
 
+    /**
+     * Uploads an {@code int[]} that will be accessible inside the shader
+     * @param varName
+     * @param val
+     */
     public void uploadIntArray(String varName, int[] val) {
         int varLocation = glGetUniformLocation(shaderID, varName);
         this.use();
         glUniform1iv(varLocation, val);
     }
 
+    /**
+     * Uploads an {@code int} that will be accessible inside the shader
+     * @param varName
+     * @param slot
+     */
     public void uploadTexture(String varName, int slot) {
-        int varLocation = glGetUniformLocation(shaderID, varName);
-        this.use();
-        glUniform1i(varLocation, slot);
+        this.uploadInt(varName, slot);
     }
 }

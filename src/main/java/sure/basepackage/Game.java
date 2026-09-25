@@ -63,8 +63,6 @@ public abstract class Game {
             camera = new Camera(new Vector2f());
         }
 
-        MouseListener.attachCamera(camera);
-
         if (shader == null) {
             shader = new Shader("src/main/java/sure/basepackage/shaders/default.glsl");
         }
@@ -99,6 +97,7 @@ public abstract class Game {
 
         // update Listeners
         KeyListener.updateListener();
+        MouseListener.updateListener();
 
         // draw
         VertexRenderer.render();

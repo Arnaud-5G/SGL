@@ -29,21 +29,47 @@ public abstract class GraphicsObject extends GameObject implements Cloneable {
         VertexRenderer.add(this);
     }
 
+    /**
+     * @return the number of triangles that should be rendered
+     */
     public abstract int numberOfElements();
+
+    /**
+     * @return {@code float[x][2]} that contains all vertices coordinates in world space 
+     */
     public abstract float[][] generatePoses();
+
+    /**
+     * @return {@code float[x][2]} that contains all vertices uv coordinates that go from 0-1
+     */
     public abstract float[][] generateUVs();
+
+    /**
+     * Ex.: {@code new int[]{
+                2, 1, 3, // top-right triangle
+                3, 1, 0, // bottom-left triangle
+        };}
+     * @return {@code int[x]} that contains the order of triangles that should be rendered by indicating the vertices that make them up
+     */
     public abstract int[] makePartialEBO();
 
     public int numberOfVertices() {
         return numOfVertices;
     }
 
+    /**
+     * This function should only be called by internal game logic
+     */
     public void updateGraphics() {
         vertexPos = generatePoses();
         vertexColor = generateColors();
         vertexUV = generateUVs();
     }
 
+    /**
+     * Generates a color for each vertex
+     * @return {@code float[x][4]} containing an rgba value for each vertex
+     */
     public float[][] generateColors() {
         float[][] colorArray = new float[numOfVertices][4];
 
@@ -57,6 +83,9 @@ public abstract class GraphicsObject extends GameObject implements Cloneable {
         return colorArray;
     }
 
+    /**
+     * @return the attribute array to be fed to opengl
+     */
     public float[] makePartialVAO() {
         float[] miniVAO = new float[numOfVertices * NUMBER_OF_ATTRIBUTES];
         int textureID = texture != null ? texture.getTextureID() : -1;
