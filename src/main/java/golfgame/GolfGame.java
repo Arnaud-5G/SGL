@@ -40,7 +40,6 @@ public class GolfGame extends Game {
 
     @Override
     public void start() {
-        coords = new TextBox(800, 500, 5);
         fpsCounter = new FPS(10);
         golfBall = new GolfBall(300, 500, 20, 1000, 2, null);
         golfBall.color = Color.RED;
@@ -76,10 +75,6 @@ public class GolfGame extends Game {
 
         int x = (int) MouseListener.getMousePos().x;
         int y = (int) MouseListener.getMousePos().y;
-
-        coords.set("(" + x + ", " + y + ")\n" + 
-        "(" + Window.get().getActualWidth() + ", " + Window.get().getActualHeight() + ")\n" + 
-        "(" + x/(float)Window.get().getActualWidth() + ", " + y/(float)Window.get().getActualHeight() + ")");
 
         if (KeyListener.getKeyState(GLFW_KEY_LEFT_SHIFT) == KeyState.DOWN) {
             World mPos = MouseListener.getMousePos().toWorld();
