@@ -9,6 +9,7 @@ import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.MouseListener;
 import sure.basepackage.objects.Rectangle;
 import sure.basepackage.renderers.Sprites.SpriteSheet;
+import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.components.Clickable;
 import sure.basepackage.components.Updating;
 import sure.basepackage.components.UsesFocus;
@@ -55,7 +56,7 @@ public class TextField extends TextBox implements Clickable, UsesFocus {
     }
 
     @Override
-    public boolean contains(Vector3f pos) { // TODO: fix
+    public boolean contains(Screen pos) { // TODO: fix
         if  (pos.x < x || pos.x > x + (getWidth())/2 + characters.size()*getWidth() ||
             (pos.y < y || pos.y > y + (getHeight())/2 + getHeight())) {
             if (MouseListener.mouseButtonDown(MouseListener.MouseButton.LEFT)) {

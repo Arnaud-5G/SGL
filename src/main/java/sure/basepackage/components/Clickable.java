@@ -1,9 +1,9 @@
 package sure.basepackage.components;
 
-import org.joml.Vector3f;
+import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.listeners.MouseListener;
 
 public interface Clickable {
-    public boolean contains(Vector3f pos);
+    public boolean contains(Screen pos);
     public void clickEvent(MouseListener.MouseButton button);
 }

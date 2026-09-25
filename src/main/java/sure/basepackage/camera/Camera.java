@@ -1,8 +1,12 @@
-package sure.basepackage;
+package sure.basepackage.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import sure.basepackage.Window;
+import sure.basepackage.camera.Coordinates.Screen;
+import sure.basepackage.camera.Coordinates.World;
 
 public class Camera {
     private Matrix4f projectionMatrix, viewMatrix;
@@ -43,10 +47,16 @@ public class Camera {
         return this.projectionMatrix;
     }
 
-    public Vector3f screenToWorld(Vector2f screenPosition) {
-        screenPosition.y = Window.get().getActualHeight() - screenPosition.y;
+    /**
+     * @param screenPositionX 0-1
+     * @param screenPositionY 0-1
+     * @return
+     */
+    public World screenToWorld(float screenPositionX, float screenPositionY) {
+        screenPositionX *= Window.get().getActualWidth();
+        screenPositionY *= Window.get().getActualHeight();
         Matrix4f matrix = new Matrix4f(getProjectionMatrix()).mul(getViewMatrix());
-        Vector3f pos = matrix.unproject(new Vector3f(screenPosition, 0), new int[] { 0, 0, Window.get().getWidth(), Window.get().getHeight()}, new Vector3f());
-        return pos;
+        Vector3f pos = matrix.unproject(new Vector3f(screenPositionX, screenPositionY, 0), new int[] { 0, 0, Window.get().getWidth(), Window.get().getHeight()}, new Vector3f());
+        return new World(pos.x, pos.y);
     }
 }

@@ -8,6 +8,8 @@ import org.joml.Vector3f;
 
 import sure.basepackage.Game;
 import sure.basepackage.Window;
+import sure.basepackage.camera.Coordinates.Screen;
+import sure.basepackage.camera.Coordinates.World;
 import sure.basepackage.components.Updating;
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.KeyListener.KeyState;
@@ -63,7 +65,7 @@ public class GolfGame extends Game {
 
     @Override
     public void execute() {
-        Vector3f pos = camera.screenToWorld(new Vector2f(((float) Window.get().getActualWidth())/2, ((float) Window.get().getActualHeight())/2));
+        Vector2f pos = Screen.origin().toWorld().toVector();
         cursor.x = pos.x;
         cursor.y = pos.y;
         Time.scale(0);
@@ -80,7 +82,7 @@ public class GolfGame extends Game {
         "(" + x/(float)Window.get().getActualWidth() + ", " + y/(float)Window.get().getActualHeight() + ")");
 
         if (KeyListener.getKeyState(GLFW_KEY_LEFT_SHIFT) == KeyState.DOWN) {
-            Vector3f mPos = camera.screenToWorld(MouseListener.getMousePos());
+            World mPos = MouseListener.getMousePos().toWorld();
             test.x = mPos.x;
             test.y = mPos.y;
         }

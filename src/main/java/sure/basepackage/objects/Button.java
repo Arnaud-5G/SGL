@@ -3,6 +3,7 @@ package sure.basepackage.objects;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import sure.basepackage.renderers.Texture;
+import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.components.Clickable;
 import sure.basepackage.listeners.MouseListener;
 import sure.basepackage.listeners.MouseListener.*;
@@ -16,8 +17,8 @@ public class Button extends Rectangle implements Clickable {
     }
 
     @Override
-    public boolean contains(Vector3f pos) {
-        return SureMath.ConvexPolygon.contains(new Vector2f(pos), this);
+    public boolean contains(Screen pos) {
+        return SureMath.ConvexPolygon.contains(pos.toWorld().toVector(), this);
     }
 
     @Override

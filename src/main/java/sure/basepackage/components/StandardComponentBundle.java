@@ -23,7 +23,7 @@ public class StandardComponentBundle extends ComponentBundle {
         }
 
         for (Clickable clickable : objects) {
-            if (!(clickable.contains(Window.get().getRunningGame().getCamera().screenToWorld(MouseListener.getMousePos())))) {
+            if (!(clickable.contains(MouseListener.getMousePos()))) {
                 continue;
             }
 

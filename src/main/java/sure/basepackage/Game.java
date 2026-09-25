@@ -11,6 +11,7 @@ import sure.basepackage.renderers.VertexRenderer;
 
 import org.joml.Vector2f;
 import sure.basepackage.utils.Assets;
+import sure.basepackage.camera.Camera;
 import sure.basepackage.components.HandleComponents;
 import sure.basepackage.components.StandardComponentBundle;
 import sure.physicspackage.components.PhysicsComponentBundle;

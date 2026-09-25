@@ -3,8 +3,10 @@ package sure.basepackage.listeners;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import sure.basepackage.Camera;
+import sure.basepackage.camera.Camera;
 import sure.basepackage.Window;
+import sure.basepackage.camera.Coordinates.Screen;
+import sure.basepackage.camera.Coordinates.World;
 
 import java.util.Optional;
 
@@ -89,12 +91,8 @@ public class MouseListener {
         MouseListener.get().currentGameCamera = camera;
     }
 
-    public static Vector2f getMousePos() {
-        return new Vector2f((float) get().posX, (float) get().posY);
-    }
-
-    public static Vector3f getMouseGamePos() {
-        return MouseListener.get().currentGameCamera.screenToWorld(getMousePos());
+    public static Screen getMousePos() {
+        return Screen.fromWindowSpace((float) get().posX, (float) get().posY);
     }
 
     public static float getX() {

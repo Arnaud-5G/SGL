@@ -4,9 +4,11 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import sure.basepackage.objects.GameObject;
 import sure.basepackage.renderers.Texture;
+import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.components.Clickable;
 import sure.basepackage.components.Updating;
 import sure.basepackage.listeners.MouseListener;
+import sure.basepackage.listeners.MouseListener.MouseButton;
 import sure.basepackage.objects.Circle;
 import sure.basepackage.objects.Rectangle;
 import sure.basepackage.utils.Color;
@@ -30,13 +32,13 @@ public class Slider extends GameObject {
         }
 
         @Override
-        public boolean contains(Vector3f pos) {
-            return SureMath.ConvexPolygon.contains(new Vector2f(pos), this);
+        public boolean contains(Screen pos) {
+            return SureMath.ConvexPolygon.contains(pos.toWorld().toVector(), this);
         }
 
         @Override
-        public void clickEvent(MouseListener.MouseButton button) {
-            x = Math.clamp(MouseListener.getMouseGamePos().x, minx, minx+length);
+        public void clickEvent(MouseButton button) {
+            x = Math.clamp(MouseListener.getMousePos().toWorld().x, minx, minx+length);
             isDragging = true;
         }
 
@@ -44,7 +46,7 @@ public class Slider extends GameObject {
         public void update() {
             isDragging &= MouseListener.isDragging();
             if (isDragging) {
-                x = Math.clamp(MouseListener.getMouseGamePos().x, minx, minx+length);
+                x = Math.clamp(MouseListener.getMousePos().toWorld().x, minx, minx+length);
             }
         }
 
