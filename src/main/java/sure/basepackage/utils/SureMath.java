@@ -307,6 +307,26 @@ public class SureMath {
         return newSpeed;
     }
 
+    // TODO: fix problem when object is stationary
+    public static float calculateImpactStrength(Vector2f speed, Vector2f normal) {
+        if (normal.length() == 0 || speed.length() == 0) {
+            return 0;
+        }
+
+        float normalAngle = getAngle(normal);
+        float speedAngle = getAngle(speed);
+        float deltaAngle = 0 - normalAngle;
+
+        // turn the speed vector so that the normal is along an axis
+        Vector2f projectedSpeed = new Vector2f((float) Math.cos(speedAngle + deltaAngle)*speed.length(), (float) Math.sin(speedAngle + deltaAngle)*speed.length());
+
+        if (projectedSpeed.x < 0) {
+            projectedSpeed.x = 0;
+        }
+        
+        return speed.length() - projectedSpeed.length();
+    }
+
     public static Vector2f applyFriction(Vector2f force, Vector2f speed, Vector2f normal, float frictionPercent) {
         if (normal.length() == 0 || speed.length() == 0) {
             return new Vector2f(force);

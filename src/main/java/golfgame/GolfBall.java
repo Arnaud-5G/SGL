@@ -13,6 +13,7 @@ import org.joml.Vector2f;
 
 import sure.basepackage.objects.Circle;
 import sure.basepackage.renderers.Texture;
+import sure.basepackage.utils.Assets;
 import sure.basepackage.utils.SureMath;
 import sure.basepackage.utils.Time;
 import sure.physicspackage.Gravity;
@@ -44,6 +45,10 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
 
     @Override
     public void moveObject(Vector2f force, Vector2f normal) {
+        float impact = SureMath.calculateImpactStrength(speed, normal);
+        if (impact > 2f && speed.length() != 0) {
+            Assets.getSound("assets/Collision8-Bit.ogg").play();
+        }
         speed = SureMath.calculateSpeed(force, speed, normal, 0.4f, 0.1f);
     }
 

@@ -4,10 +4,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import sure.basepackage.Game;
-import sure.basepackage.Window;
 import sure.basepackage.camera.Coordinates.Screen;
 import sure.basepackage.camera.Coordinates.World;
 import sure.basepackage.components.Updating;
@@ -19,8 +17,9 @@ import sure.basepackage.objects.Circle;
 import sure.basepackage.objects.Rectangle;
 import sure.basepackage.objects.ui.FPS;
 import sure.basepackage.objects.ui.TextBox;
+import sure.basepackage.sound.Sound;
+import sure.basepackage.utils.Assets;
 import sure.basepackage.utils.Color;
-import sure.basepackage.utils.SureMath;
 import sure.basepackage.utils.Time;
 
 public class GolfGame extends Game {
@@ -36,10 +35,16 @@ public class GolfGame extends Game {
     TextBox coords;
 
     @Override
-    public void load() {}
+    public void load() {
+        Assets.getSound("assets/Collision8-Bit.ogg");
+        Assets.getSound("assets/EDM.ogg");
+    }
 
     @Override
     public void start() {
+        Sound music = Assets.getSound("assets/EDM.ogg", true);
+        music.setVolume(0.1f);
+        music.play();
         fpsCounter = new FPS(10);
         golfBall = new GolfBall(300, 500, 20, 1000, 2, null);
         golfBall.color = Color.RED;
