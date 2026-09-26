@@ -75,8 +75,11 @@ public class SureMath {
 
                     float[] point = segmentsIntersectionPoint(new float[][] { vertices1[i], vertices1[j] },
                             new float[][] { vertices2[k], vertices2[m] });
-                    if (point == null)
+                    if (point == null) {
                         continue;
+                    } else if (point[1] == Float.NaN) {
+                        point = point_i;
+                    }
 
                     points.add(new Vector2f(point[0], point[1]));
                 }
@@ -85,6 +88,12 @@ public class SureMath {
             return points.toArray(new Vector2f[0]);
         }
 
+        /**
+         * @param segment1
+         * @param segment2
+         * @return the coordinates where the two segments intersect
+         * @apiNote The point may be null which indicates that there is no intersection between the two segments. One or both of the axes may be NaN which indicates that the two segments overlap and no or only one axis could be found.
+         */
         public static float[] segmentsIntersectionPoint(float[][] segment1, float[][] segment2) {
             float[] point_i = segment1[0];
             float[] point_j = segment1[1];
@@ -92,34 +101,65 @@ public class SureMath {
             float[] point_k = segment2[0];
             float[] point_m = segment2[1];
 
+            // calculate the slope of the segments
             float a1 = (point_i[1] - point_j[1]) / (point_i[0] - point_j[0]);
             float a2 = (point_k[1] - point_m[1]) / (point_k[0] - point_m[0]);
+
+            // if one or both of the segments are vertical
             if ((Float.isInfinite(a1) && isBetween(point_i[0], point_k[0], point_m[0])
-                    && isBetween(point_i[1], point_k[1], point_m[1]) && isBetween(point_j[1], point_k[1], point_m[1]))
-                    || (Float.isInfinite(a2) && isBetween(point_k[0], point_i[0], point_j[0])
-                            && isBetween(point_k[1], point_i[1], point_j[1])
-                            && isBetween(point_m[1], point_i[1], point_j[1]))) {
-                return point_i; // TODO: fix
+                    && isBetween(point_i[1], point_k[1], point_m[1])
+                    && isBetween(point_j[1], point_k[1], point_m[1])) &&
+                (Float.isInfinite(a2) && isBetween(point_k[0], point_i[0], point_j[0])
+                    && isBetween(point_k[1], point_i[1], point_j[1])
+                    && isBetween(point_m[1], point_i[1], point_j[1]))) {
+                return new float[] {point_i[0], Float.NaN}; // a1 and a2 are infinite and collide
+            } else if ((Float.isInfinite(a1) && isBetween(point_i[0], point_k[0], point_m[0])
+                    && isBetween(point_i[1], point_k[1], point_m[1])
+                    && isBetween(point_j[1], point_k[1], point_m[1]))) {
+                float b2 = point_k[1] - a2 * point_k[0];
+                return new float[] {point_i[0], a2*point_i[0] + b2}; // a1 is infinite and collides with the other segment
+            } else if ((Float.isInfinite(a2) && isBetween(point_k[0], point_i[0], point_j[0])
+                    && isBetween(point_k[1], point_i[1], point_j[1])
+                    && isBetween(point_m[1], point_i[1], point_j[1]))) {
+                float b1 = point_i[1] - a1 * point_i[0];
+                return new float[] {point_k[0], a1*point_k[0] + b1}; // a2 is infinite and collides with the other segment
             }
 
+            // calculates the intersection between the y-axis and the segments if they were infinitely long
             float b1 = point_i[1] - a1 * point_i[0];
             float b2 = point_k[1] - a2 * point_k[0];
+
+            // if the segments are on top of each other
+            if (a1 == a2 && b1 == b2 && a1 == 0 && 
+                isBetween(point_i[0], point_k[0], point_m[0]) || 
+                isBetween(point_j[0], point_k[0], point_m[0]) || 
+                isBetween(point_k[0], point_i[0], point_j[0]) || 
+                isBetween(point_m[0], point_i[0], point_j[0])) {
+                return new float[] {Float.NaN, b1}; // the segments are on top of each other but not horizontal
+            } else if (a1 == a2 && b1 == b2 && 
+                isBetween(point_i[0], point_k[0], point_m[0]) || 
+                isBetween(point_j[0], point_k[0], point_m[0]) || 
+                isBetween(point_k[0], point_i[0], point_j[0]) || 
+                isBetween(point_m[0], point_i[0], point_j[0])) {
+                return new float[] {Float.NaN, Float.NaN}; // the segments are on top of each other
+            }
 
             float x = (b2 - b1) / (a1 - a2);
             float y = (a1 * b2 - b1 * a2) / (a1 - a2);
 
             if (isBetween(x, point_i[0], point_j[0]) && isBetween(y, point_i[1], point_j[1])
                     && isBetween(x, point_k[0], point_m[0]) && isBetween(y, point_k[1], point_m[1])) {
-                return new float[] { x, y };
+                return new float[] { x, y }; // best case
             }
 
             return null;
         }
 
+        // TODO: collisions rectangle -> rectangle do not work
         // TODO: add extra push when inside an object to not make it stick inside
         public static Vector2f getCollisionNormal(Colliding object, float[] centroid, Colliding colliding) {
             Vector2f normal = new Vector2f();
-            if (!(colliding instanceof GraphicsObject)) {
+            if (!(colliding instanceof GraphicsObject) || !(object instanceof GraphicsObject)) {
                 return new Vector2f();
             }
 
@@ -131,20 +171,19 @@ public class SureMath {
                 if (colliding.contains(point)) {
                     Vector2f subNormal;
 
-                    // TODO: what if a segment does not intersect?
                     float[][] segment1 = new float[][] {
-                            objectGraphics.getPoses()[i - 1 < 0 ? objectGraphics.getPoses().length - 1 : i], point };
+                            objectGraphics.getPoses()[i - 1 < 0 ? objectGraphics.getPoses().length - 1 : i - 1], point };
                     float[][] segment2 = new float[][] { point,
-                            objectGraphics.getPoses()[i + 1 >= objectGraphics.getPoses().length ? 0 : i] };
+                            objectGraphics.getPoses()[i + 1 >= objectGraphics.getPoses().length ? 0 : i + 1] };
 
                     float[][] intersectionPoints = new float[2][2];
                     int m = 0;
 
                     // check for where the segments touch the object
-                    for (int k = 0,
-                            j = collidingObject.getPoses().length - 1; k < collidingObject.getPoses().length; j = k++) {
+                    for (int k = 0, j = collidingObject.getPoses().length - 1; k < collidingObject.getPoses().length; j = k++) {
                         intersectionPoints[m] = segmentsIntersectionPoint((m == 0 ? segment1 : segment2),
                                 new float[][] { collidingObject.getPoses()[j], collidingObject.getPoses()[k] });
+                        System.out.println(intersectionPoints[m]);
                         if (intersectionPoints[m] != null) {
                             if (m >= 1) {
                                 break;
@@ -156,9 +195,13 @@ public class SureMath {
                     float deltaX = 0;
                     float deltaY = 0;
                     if (intersectionPoints[0] != null && intersectionPoints[1] != null) {
+                        System.out.println(intersectionPoints[0][0] + " (x1) " + intersectionPoints[0][1] + " (y1)");
+                        System.out.println(intersectionPoints[1][0] + " (x2) " + intersectionPoints[1][1] + " (y2)");
                         deltaX = intersectionPoints[0][0] - intersectionPoints[1][0];
                         deltaY = intersectionPoints[0][1] - intersectionPoints[1][1];
                     }
+
+                    System.out.println(deltaX + " (dx)\n" + deltaY + " (dy)");
 
                     // take the perpendicular line to the segment
                     subNormal = SureMath.normalize(new Vector2f(deltaY, -deltaX));
@@ -174,7 +217,6 @@ public class SureMath {
 
             return SureMath.normalize(normal);
         }
-
     }
 
     public static class Circle {

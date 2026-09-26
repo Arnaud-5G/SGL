@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 
 import sure.basepackage.components.ComponentBundle;
 import sure.basepackage.objects.GraphicsObject;
+import sure.basepackage.utils.SureMath;
 import sure.basepackage.*;
 
 public class PhysicsComponentBundle extends ComponentBundle {
@@ -40,12 +41,11 @@ public class PhysicsComponentBundle extends ComponentBundle {
                 if (normal.length() == 0) {
                     normal = physics.getCollisionNormal(otherObject);
                 }
+                System.out.println(normal);
                 finalNormal.add(normal);
             }
 
-            if (finalNormal.length() != 0) {
-                finalNormal.normalize();
-            }
+            SureMath.normalize(finalNormal);
 
             finalNormal.mul(forces.length());
             forces.add(finalNormal);
