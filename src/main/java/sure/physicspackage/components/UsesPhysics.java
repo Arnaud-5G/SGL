@@ -12,6 +12,7 @@ public interface UsesPhysics extends Colliding {
      * Is called every frame to allow the object to interact with the forces affecting it
      * @param force
      * @param normal
+     * @param objects
      */
-    public void moveObject(Vector2f force, Vector2f normal);
+    public void moveObject(Vector2f force, Vector2f normal, Colliding[] objects);
 }

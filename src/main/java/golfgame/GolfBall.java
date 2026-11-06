@@ -17,6 +17,7 @@ import sure.basepackage.utils.Assets;
 import sure.basepackage.utils.SureMath;
 import sure.basepackage.utils.Time;
 import sure.physicspackage.Gravity;
+import sure.physicspackage.SurePhysics;
 import sure.basepackage.listeners.KeyListener;
 import sure.basepackage.listeners.KeyListener.KeyState;
 
@@ -35,7 +36,7 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
 
     @Override
     public Vector2f getCollisionNormal(Colliding object) {
-        return SureMath.Circle.getCollisionNormal(this, new float[] {x, y}, object);
+        return SurePhysics.Circle.getCollisionNormal(this, new float[] {x, y}, object);
     }
 
     @Override
@@ -44,12 +45,12 @@ public class GolfBall extends Circle implements UsesPhysics, Updating {
     }
 
     @Override
-    public void moveObject(Vector2f force, Vector2f normal) {
-        float impact = SureMath.calculateImpactStrength(speed, normal);
+    public void moveObject(Vector2f force, Vector2f normal, Colliding[] objects) {
+        float impact = SurePhysics.calculateImpactStrength(speed, normal);
         if (impact > 2f && speed.length() != 0) {
             Assets.getSound("assets/Collision8-Bit.ogg").play();
         }
-        speed = SureMath.calculateSpeed(force, speed, normal, 0.4f, 0.1f);
+        speed = SurePhysics.calculateSpeed(force, speed, normal, 0.4f, 0.1f);
     }
 
     @Override

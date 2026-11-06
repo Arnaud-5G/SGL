@@ -108,6 +108,10 @@ public class Sound {
         alSourcef(sourceId, AL_GAIN, volume);
     }
 
+    public void setLooping(boolean looping) {
+        alSourcei(sourceId, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
+    }
+
     public float getVolume() {
         return alGetSourcef(sourceId, AL_GAIN);
     }

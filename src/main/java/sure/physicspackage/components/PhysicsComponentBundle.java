@@ -1,5 +1,7 @@
 package sure.physicspackage.components;
 
+import java.util.ArrayList;
+
 import org.joml.Vector2f;
 
 import sure.basepackage.components.ComponentBundle;
@@ -32,6 +34,8 @@ public class PhysicsComponentBundle extends ComponentBundle {
             Vector2f forces = physics.calculateForces();
             Vector2f finalNormal = new Vector2f();
 
+            ArrayList<Colliding> collidingObjects = new ArrayList<>();
+
             for (Colliding otherObject : Window.get().getRunningGame().getGameObjects(Colliding.class)) {
                 if (otherObject.equals((Colliding) physics)) {
                     continue;
@@ -41,8 +45,11 @@ public class PhysicsComponentBundle extends ComponentBundle {
                 if (normal.length() == 0) {
                     normal = physics.getCollisionNormal(otherObject);
                 }
-                System.out.println(normal);
                 finalNormal.add(normal);
+
+                if (normal.length() != 0) {
+                    collidingObjects.add(otherObject);
+                }
             }
 
             SureMath.normalize(finalNormal);
@@ -50,7 +57,7 @@ public class PhysicsComponentBundle extends ComponentBundle {
             finalNormal.mul(forces.length());
             forces.add(finalNormal);
 
-            physics.moveObject(forces, finalNormal);
+            physics.moveObject(forces, finalNormal, collidingObjects.toArray(new Colliding[0]));
         }
     }
 }

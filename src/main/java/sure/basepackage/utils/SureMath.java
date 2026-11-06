@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import org.joml.Vector2f;
 
 import sure.basepackage.objects.GraphicsObject;
-import sure.physicspackage.components.Colliding;
 
 public class SureMath {
-    private SureMath() {
+    protected SureMath() {
     }
 
     public static class ConvexPolygon {
-        private ConvexPolygon() {
+        protected ConvexPolygon() {
         }
 
         public static boolean contains(Vector2f point, GraphicsObject object) {
@@ -144,83 +143,76 @@ public class SureMath {
                 return new float[] {Float.NaN, Float.NaN}; // the segments are on top of each other
             }
 
+            // solves for coordinates
             float x = (b2 - b1) / (a1 - a2);
             float y = (a1 * b2 - b1 * a2) / (a1 - a2);
 
             if (isBetween(x, point_i[0], point_j[0]) && isBetween(y, point_i[1], point_j[1])
                     && isBetween(x, point_k[0], point_m[0]) && isBetween(y, point_k[1], point_m[1])) {
-                return new float[] { x, y }; // best case
+                    return new float[] { x, y }; // best case
             }
 
             return null;
         }
 
-        // TODO: collisions rectangle -> rectangle do not work
-        // TODO: add extra push when inside an object to not make it stick inside
-        public static Vector2f getCollisionNormal(Colliding object, float[] centroid, Colliding colliding) {
-            Vector2f normal = new Vector2f();
-            if (!(colliding instanceof GraphicsObject) || !(object instanceof GraphicsObject)) {
-                return new Vector2f();
-            }
+        //! may be sketch
+        public static boolean intersectsWithPoint(GraphicsObject object, Vector2f point) {
+            float[][] vertices = object.getPoses();
+            final float margin = 1E-10f;
 
-            GraphicsObject collidingObject = (GraphicsObject) colliding;
-            GraphicsObject objectGraphics = (GraphicsObject) object;
+            for (int i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+                float a = (vertices[i][1] - vertices[j][1]) / (vertices[i][0] - vertices[j][0]);
+                float b = vertices[i][1] - a * vertices[j][0];
 
-            for (int i = 0; i < objectGraphics.getPoses().length; i++) {
-                float[] point = objectGraphics.getPoses()[i];
-                if (colliding.contains(point)) {
-                    Vector2f subNormal;
+                if (vertices[i][0] == vertices[j][0] && isBetween((point.y - b)/a, point.x - margin, point.x + margin)) {
+                    return true;
+                }
 
-                    float[][] segment1 = new float[][] {
-                            objectGraphics.getPoses()[i - 1 < 0 ? objectGraphics.getPoses().length - 1 : i - 1], point };
-                    float[][] segment2 = new float[][] { point,
-                            objectGraphics.getPoses()[i + 1 >= objectGraphics.getPoses().length ? 0 : i + 1] };
-
-                    float[][] intersectionPoints = new float[2][2];
-                    int m = 0;
-
-                    // check for where the segments touch the object
-                    for (int k = 0, j = collidingObject.getPoses().length - 1; k < collidingObject.getPoses().length; j = k++) {
-                        intersectionPoints[m] = segmentsIntersectionPoint((m == 0 ? segment1 : segment2),
-                                new float[][] { collidingObject.getPoses()[j], collidingObject.getPoses()[k] });
-                        System.out.println(intersectionPoints[m]);
-                        if (intersectionPoints[m] != null) {
-                            if (m >= 1) {
-                                break;
-                            }
-                            m++;
-                        }
-                    }
-
-                    float deltaX = 0;
-                    float deltaY = 0;
-                    if (intersectionPoints[0] != null && intersectionPoints[1] != null) {
-                        System.out.println(intersectionPoints[0][0] + " (x1) " + intersectionPoints[0][1] + " (y1)");
-                        System.out.println(intersectionPoints[1][0] + " (x2) " + intersectionPoints[1][1] + " (y2)");
-                        deltaX = intersectionPoints[0][0] - intersectionPoints[1][0];
-                        deltaY = intersectionPoints[0][1] - intersectionPoints[1][1];
-                    }
-
-                    System.out.println(deltaX + " (dx)\n" + deltaY + " (dy)");
-
-                    // take the perpendicular line to the segment
-                    subNormal = SureMath.normalize(new Vector2f(deltaY, -deltaX));
-
-                    // check for normal orientation
-                    if (subNormal.dot(new Vector2f(point[0] - centroid[0], point[1] - centroid[1])) > 0) {
-                        subNormal.mul(-1);
-                    }
-
-                    normal.add(subNormal);
+                if (isBetween(a * point.x + b, point.y - margin, point.y + margin)) {
+                    return true;
                 }
             }
 
-            return SureMath.normalize(normal);
+            return false;
+        }
+
+        public static Vector2f getNormal(GraphicsObject object, Vector2f center, Vector2f point) {
+            if (!intersectsWithPoint(object, point)) {
+                return null;
+            }
+
+            float[][] vertices = object.getPoses();
+            final float margin = 1E-10f;
+
+            for (int i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+                float a = (vertices[i][1] - vertices[j][1]) / (vertices[i][0] - vertices[j][0]);
+                float b = vertices[i][1] - a * vertices[j][0];
+
+                if (vertices[i][0] == vertices[j][0] && isBetween((point.y - b)/a, point.x - margin, point.x + margin)
+                     || isBetween(a * point.x + b, point.y - margin, point.y + margin)) {
+                    float[] middlePoint = new float[] {(vertices[i][0] - vertices[j][0])/2, (vertices[i][1] - vertices[j][1])/2};
+                    boolean yShouldBePositive = false;
+                    // normal y component should be positive if the middle point's x component
+                    // is positive with the origin at the center and if the slope of the segment is positive
+                    if (middlePoint[0] >= center.x)
+                        yShouldBePositive = !yShouldBePositive;
+                    if (a < 0)
+                        yShouldBePositive = !yShouldBePositive;
+                    Vector2f normal = createSegmentVector(vertices[i], vertices[j]).perpendicular();
+                    if (yShouldBePositive != normal.y < 0) {
+                        normal = normal.mul(-1);
+                    }
+
+                    return normal;
+                }
+            }
+
+            return null;
         }
     }
 
     public static class Circle {
-        private Circle() {
+        protected Circle() {
         }
 
         public static boolean contains(Vector2f point, float[] center, float radius) {
@@ -232,25 +224,38 @@ public class SureMath {
         }
 
         public static boolean intersects() {
-            // not implemented
+            // TODO
             return false;
+        }
+
+        public static boolean intersectsWithPoint(Vector2f point, float[] center, float radius) {
+            return intersectsWithPoint(new float[] {point.x, point.y}, center, radius);
+        }
+
+        public static boolean intersectsWithPoint(float[] point, float[] center, float radius) {
+            final float margin = 1E-10f;
+            float distance = (float) Math.hypot(point[0]-center[0], point[1]-center[1]);
+            return isBetween(distance, radius - margin, radius + margin);
         }
 
         public static boolean getIntersectionPoints(GraphicsObject circle1, GraphicsObject circle2) {
-            // not implemented
+            // TODO
             return false;
         }
 
-        public static Vector2f getCollisionNormal(GraphicsObject circle, float[] center, Colliding object) {
-            Vector2f normal = new Vector2f();
-            for (float[] point : circle.getPoses()) {
-                if (object.contains(point)) {
-                    Vector2f subNormal = new Vector2f(center[0] - point[0], center[1] - point[1]);
-                    normal.add(subNormal);
-                }
+        /**
+         * Will return the normal of circle at a given point
+         * @param point
+         * @param center
+         * @param radius
+         * @return
+         */
+        public static Vector2f getNormal(Vector2f point, float[] center, float radius) {
+            if (!intersectsWithPoint(point, center, radius)) {
+                return null;
             }
 
-            return SureMath.normalize(normal);
+            return new Vector2f(point.x-center[0], point.y-center[1]).normalize();
         }
     }
 
@@ -282,67 +287,8 @@ public class SureMath {
     public static Vector2f createAngledVector(float angle, float length) {
         return new Vector2f((float) Math.cos(angle)*length, (float) Math.sin(angle)*length);
     }
-    
-    // TODO: add a way to get the amount of speed lost
-    public static Vector2f getSpeedAfterCollision(Vector2f speed, Vector2f normal, float bouncePercent) {
-        if (normal.length() == 0 || speed.length() == 0) {
-            return new Vector2f(speed);
-        }
 
-        float normalAngle = getAngle(normal);
-        float speedAngle = getAngle(speed);
-        float deltaAngle = 0 - normalAngle;
-
-        // turn the speed vector so that the normal is along an axis
-        Vector2f projectedSpeed = new Vector2f((float) Math.cos(speedAngle + deltaAngle)*speed.length(), (float) Math.sin(speedAngle + deltaAngle)*speed.length());
-
-        if (projectedSpeed.x < 0) {
-            projectedSpeed.x = 0;
-        }
-
-        float projectedAngle = getAngle(projectedSpeed);
-        Vector2f newSpeed = createAngledVector(projectedAngle - deltaAngle, projectedSpeed.length());
-        newSpeed.add(new Vector2f(normal).normalize().mul((speed.length() - newSpeed.length()) * bouncePercent));
-        
-        return newSpeed;
-    }
-
-    // TODO: fix problem when object is stationary
-    public static float calculateImpactStrength(Vector2f speed, Vector2f normal) {
-        if (normal.length() == 0 || speed.length() == 0) {
-            return 0;
-        }
-
-        float normalAngle = getAngle(normal);
-        float speedAngle = getAngle(speed);
-        float deltaAngle = 0 - normalAngle;
-
-        // turn the speed vector so that the normal is along an axis
-        Vector2f projectedSpeed = new Vector2f((float) Math.cos(speedAngle + deltaAngle)*speed.length(), (float) Math.sin(speedAngle + deltaAngle)*speed.length());
-
-        if (projectedSpeed.x < 0) {
-            projectedSpeed.x = 0;
-        }
-        
-        return speed.length() - projectedSpeed.length();
-    }
-
-    public static Vector2f applyFriction(Vector2f force, Vector2f speed, Vector2f normal, float frictionPercent) {
-        if (normal.length() == 0 || speed.length() == 0) {
-            return new Vector2f(force);
-        }
-        
-        float frictionMagnitude = normal.length() * frictionPercent;
-        Vector2f friction = createAngledVector(-getAngle(speed), -frictionMagnitude);
-        
-        return force.add(friction);
-    }
-
-    public static Vector2f calculateSpeed(Vector2f force, Vector2f originalSpeed, Vector2f normal, float bouncePercent, float frictionPercent) {
-        Vector2f speed = SureMath.getSpeedAfterCollision(originalSpeed, normal, bouncePercent);
-        force = SureMath.applyFriction(force, speed, normal, frictionPercent);
-        speed.x += force.x * Time.scaledDeltaTime();
-        speed.y += force.y * Time.scaledDeltaTime();
-        return speed;
+    public static Vector2f createSegmentVector(float[] point1, float[] point2) {
+        return createAngledVector(new Vector2f(point1[0], point1[1]).angle(new Vector2f(point2[0], point2[1])), Vector2f.distance(point1[0], point1[1], point2[0], point2[1]));
     }
 }

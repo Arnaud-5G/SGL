@@ -1,5 +1,6 @@
 package golfgame;
 
+import sure.physicspackage.SurePhysics;
 import sure.physicspackage.components.*;
 
 import org.joml.Vector2f;
@@ -16,7 +17,7 @@ public class Floor extends Rectangle implements Colliding {
 
     @Override
     public Vector2f getCollisionNormal(Colliding object) {
-        return SureMath.ConvexPolygon.getCollisionNormal(this, new float[] {x, y}, object);
+        return SurePhysics.ConvexPolygon.getCollisionNormal(this, new float[] {x, y}, object);
     }
 
     @Override

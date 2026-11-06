@@ -54,7 +54,9 @@ public class Assets {
 
     public static Sound getSound(String filepath, boolean looping) {
         if (sounds.containsKey(filepath)) {
-            return sounds.get(filepath);
+            Sound sound = sounds.get(filepath);
+            sound.setLooping(looping);
+            return sound;
         }  else {
             Sound sound = new Sound(filepath, looping);
             sounds.put(filepath, sound);
